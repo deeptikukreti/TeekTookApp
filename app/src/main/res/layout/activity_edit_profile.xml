@@ -67,7 +67,8 @@
                 android:layout_marginLeft="@dimen/size20"
                 android:layout_marginRight="@dimen/size20"
                 android:layout_height="wrap_content">
-                <VideoView
+
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/inside_video"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/size300"

@@ -15,4 +15,5 @@
 
     <color name="mcam_color_light">#FAFAFA</color>
     <color name="mcam_color_dark">#424242</color>
+    <color name="blackOverlay">#80000000</color>
 </resources>

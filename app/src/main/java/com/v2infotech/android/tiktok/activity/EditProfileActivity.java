@@ -9,18 +9,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -31,6 +36,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.squareup.picasso.Picasso;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CircleTransform;
@@ -39,17 +47,36 @@ import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
 import com.v2infotech.android.tiktok.model.LoginResponseParser;
 import com.v2infotech.android.tiktok.model.UserProfileResponse;
+import com.v2infotech.android.tiktok.videotrimmer.BaseActivity;
+import com.v2infotech.android.tiktok.videotrimmer.OnSnackbarActionListener;
+import com.v2infotech.android.tiktok.videotrimmer.VideoPicker;
+import com.v2infotech.android.tiktok.videotrimmer.VideoTrimmerActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EditProfileActivity extends AppCompatActivity {
+import fusionsoftware.loop.videotrimmer.utils.FileUtils;
 
+import static com.v2infotech.android.tiktok.videotrimmer.Constants.EXTRA_VIDEO_PATH;
+
+public class EditProfileActivity extends AppCompatActivity {
+    //videtrim.........
+//    ActivityMainBinding mBinder;
+    public static final int PERMISSION_STORAGE = 100;
+    private final int REQUEST_VIDEO_TRIMMER_RESULT = 342;
+
+    private final int REQUEST_VIDEO_TRIMMER = 0x12;
+    private File thumbFile;
+    private String selectedVideoName = null, selectedVideoFile = null;
+    private RequestOptions simpleOptions;
+    //................
     private ImageView inside_imageview, outside_imageview, outside_video;
     private TextView save_icon, back_arrow_icon, tiktok_id_edt;
     private EditText profileName, bio_edt;
@@ -65,7 +92,7 @@ public class EditProfileActivity extends AppCompatActivity {
     Bitmap bitmapImage;
     Bitmap bm;
     String base64Image;
-    VideoView inside_video;
+    AppCompatImageView inside_video;
     private MediaController mediaControls;
 
 
@@ -102,12 +129,26 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         // Set up the media controller widget and attach it to the video view.
-        MediaController controller = new MediaController(this);
-        controller.setMediaPlayer(inside_video);
-        inside_video.setMediaController(controller);
+//        MediaController controller = new MediaController(this);
+//        controller.setMediaPlayer(inside_video);
+//        inside_video.setMediaController(controller);
+
+        inside_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkForPermission();
+            }
+        });
+        //video trimmr....
+//        mBinder = DataBindingUtil.setContentView(this, R.layout.activity_main);
+//        setUpToolbar("Video Trimmer Example");
+//        mBinder.btnSelectVideo.setOnClickListener(this);
+        simpleOptions = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.color.blackOverlay)
+                .error(R.color.blackOverlay)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
     }
-
-
 
 
     @Override
@@ -130,9 +171,9 @@ public class EditProfileActivity extends AppCompatActivity {
         // This is not a problem for more recent versions of Android because
         // onStop() is now the end of the visual lifecycle, and that is where
         // most of the app teardown should take place.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            inside_video.pause();
-        }
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+//            inside_video.pause();
+//        }
     }
 
     @Override
@@ -141,7 +182,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Media playback takes a lot of resources, so everything should be
         // stopped and released at this time.
-        releasePlayer();
+//        releasePlayer();
     }
 
     @Override
@@ -150,7 +191,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // Save the current playback position (in milliseconds) to the
         // instance state bundle.
-        outState.putInt(PLAYBACK_TIME, inside_video.getCurrentPosition());
+//        outState.putInt(PLAYBACK_TIME, inside_video.getCurrentPosition());
     }
 
     private void getIds() {
@@ -168,9 +209,9 @@ public class EditProfileActivity extends AppCompatActivity {
 //        final VideoView videoView = (VideoView)
 //                findViewById(R.id.videoView1);
 
-        inside_video.setVideoPath(
-                "http://www.ebookfrenzy.com/android_book/movie.mp4");
-
+//        inside_video.setVideoPath(
+//                "http://www.ebookfrenzy.com/android_book/movie.mp4");
+//
 
         SharedPreferences sp = this.getSharedPreferences("USER_PREFS", Context.MODE_PRIVATE);
         String email = sp.getString("email", "");
@@ -288,40 +329,38 @@ public class EditProfileActivity extends AppCompatActivity {
         startActivityForResult(intent, SELECT_PHOTO);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_PHOTO) {
-                onSelectFromGalleryResult(data);
-            } else if (requestCode == REQUEST_CAMERA) {
-                onCaptureImageResult(data);
-            }
-        }
-        // Identify activity by request code.
-        if(requestCode == REQUEST_CODE_SELECT_VIDEO_FILE)
-        {
-            // If the request is success.
-            if(resultCode==RESULT_OK)
-            {
-                // To make example simple and clear, we only choose video file from local file,
-                // this is easy to get video file real local path.
-                // If you want to get video file real local path from a video content provider
-                // Please read another article.
-                videoFileUri = data.getData();
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == SELECT_PHOTO) {
+//                onSelectFromGalleryResult(data);
+//            } else if (requestCode == REQUEST_CAMERA) {
+//                onCaptureImageResult(data);
+//            }
+//        }
+    // Identify activity by request code.
+//        if (requestCode == REQUEST_CODE_SELECT_VIDEO_FILE) {
+    // If the request is success.
+//            if (resultCode == RESULT_OK) {
+    // To make example simple and clear, we only choose video file from local file,
+    // this is easy to get video file real local path.
+    // If you want to get video file real local path from a video content provider
+    // Please read another article.
+//                videoFileUri = data.getData();
+//
+//                String videoFileName = videoFileUri.getLastPathSegment();
 
-                String videoFileName = videoFileUri.getLastPathSegment();
+    // videoPathEditor.setText("You select video file is " + videoFileName);
 
-                // videoPathEditor.setText("You select video file is " + videoFileName);
+    //playVideoButton.setEnabled(true);
 
-                //playVideoButton.setEnabled(true);
+    // pauseVideoButton.setEnabled(false);
 
-                // pauseVideoButton.setEnabled(false);
-
-                // replayVideoButton.setEnabled(false);
-            }
-        }
-    }
+    // replayVideoButton.setEnabled(false);
+//            }
+//        }
+//    }
 
     private void onSelectFromGalleryResult(Intent data) {
 
@@ -544,81 +583,198 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
-
     private void initializePlayer() {
         // Show the "Buffering..." message while the video loads.
-      //  mBufferingTextView.setVisibility(VideoView.VISIBLE);
+        //  mBufferingTextView.setVisibility(VideoView.VISIBLE);
 
         // Buffer and decode the video sample.
-        Uri videoUri = getMedia(VIDEO_SAMPLE);
-        inside_video.setVideoURI(videoUri);
+//        Uri videoUri = getMedia(VIDEO_SAMPLE);
+//        inside_video.setVideoURI(videoUri);
 
         // Listener for onPrepared() event (runs after the media is prepared).
-        inside_video.setOnPreparedListener(
-                new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
+//        inside_video.setOnPreparedListener(
+//                new MediaPlayer.OnPreparedListener() {
+//                    @Override
+//                    public void onPrepared(MediaPlayer mediaPlayer) {
 
-                        // Hide buffering message.
-                       // mBufferingTextView.setVisibility(VideoView.INVISIBLE);
+        // Hide buffering message.
+        // mBufferingTextView.setVisibility(VideoView.INVISIBLE);
 
-                        // Restore saved position, if available.
-                        if (mCurrentPosition > 0) {
-                            inside_video.seekTo(mCurrentPosition);
-                        } else {
-                            // Skipping to 1 shows the first frame of the video.
-                            inside_video.seekTo(1);
-                        }
+        // Restore saved position, if available.
+//                        if (mCurrentPosition > 0) {
+//                            inside_video.seekTo(mCurrentPosition);
+//                        } else {
+        // Skipping to 1 shows the first frame of the video.
+//                            inside_video.seekTo(1);
+//                        }
 
-                        // Start playing!
-                        inside_video.start();
-                    }
-                });
+        // Start playing!
+//                        inside_video.start();
+//                    }
+//                });
 
         // Listener for onCompletion() event (runs after media has finished
         // playing).
-        inside_video.setOnCompletionListener(
-                new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-                        Toast.makeText(EditProfileActivity.this,
-                                "Done",
-                                Toast.LENGTH_SHORT).show();
+//        inside_video.setOnCompletionListener(
+//                new MediaPlayer.OnCompletionListener() {
+//                    @Override
+//                    public void onCompletion(MediaPlayer mediaPlayer) {
+//                        Toast.makeText(EditProfileActivity.this,
+//                                "Done",
+//                                Toast.LENGTH_SHORT).show();
 
-                        // Return the video position to the start.
-                        inside_video.seekTo(0);
-                    }
-                });
+        // Return the video position to the start.
+//                        inside_video.seekTo(0);
+//                    }
+//                });
     }
 
 
     // Release all media-related resources. In a more complicated app this
     // might involve unregistering listeners or releasing audio focus.
-    private void releasePlayer() {
-        inside_video.stopPlayback();
-    }
+//    private void releasePlayer() {
+//        inside_video.stopPlayback();
+//    }
 
     // Get a Uri for the media sample regardless of whether that sample is
     // embedded in the app resources or available on the internet.
-    private Uri getMedia(String mediaName) {
-        if (URLUtil.isValidUrl(mediaName)) {
-            // Media name is an external URL.
-            return Uri.parse(mediaName);
-        } else {
-            // Media name is a raw resource embedded in the app.
-            return Uri.parse("android.resource://" + getPackageName() +
-                    "/raw/" + mediaName);
-        }
-    }
+//    private Uri getMedia(String mediaName) {
+//        if (URLUtil.isValidUrl(mediaName)) {
+//             Media name is an external URL.
+//            return Uri.parse(mediaName);
+//        } else {
+//             Media name is a raw resource embedded in the app.
+//            return Uri.parse("android.resource://" + getPackageName() +
+//                    "/raw/" + mediaName);
+//        }
+//    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    //video trimmer.........
+    private void checkForPermission() {
+        new BaseActivity().requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                PERMISSION_STORAGE, new BaseActivity.setPermissionListener() {
+                    @Override
+                    public void onPermissionGranted(int requestCode) {
+                        selectVideoDialog();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(int requestCode) {
+//                        showSnackbar(mBinder.getRoot(), getString(R.string.critical_permission_denied),
+//                                Snackbar.LENGTH_INDEFINITE, getString(R.string.allow), new OnSnackbarActionListener() {
+//                                    @Override
+//                                    public void onAction() {
+//                                        checkForPermission();
+//                                    }
+//                                });
+                    }
+
+                    @Override
+                    public void onPermissionNeverAsk(int requestCode) {
+//                        showPermissionSettingDialog(getString(R.string.permission_gallery_camera));
+                    }
+                });
+    }
 
 
+    private void selectVideoDialog() {
+        new VideoPicker(this) {
+            @Override
+            protected void onCameraClicked() {
+                openVideoCapture();
+            }
 
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            protected void onGalleryClicked() {
+                Intent intent = new Intent();
+                intent.setTypeAndNormalize("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(Intent.createChooser(intent, "Selet Video"), REQUEST_VIDEO_TRIMMER);
+            }
+        }.show();
+    }
 
+    private void openVideoCapture() {
+        Intent videoCapture = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        startActivityForResult(videoCapture, REQUEST_VIDEO_TRIMMER);
+    }
 
+    private void startTrimActivity(@NonNull Uri uri) {
+        Intent intent = new Intent(this, VideoTrimmerActivity.class);
+        intent.putExtra(EXTRA_VIDEO_PATH, FileUtils.getPath(this, uri));
+        startActivityForResult(intent, REQUEST_VIDEO_TRIMMER_RESULT);
+    }
+
+    private File getFileFromBitmap(Bitmap bmp) {
+        /*//create a file to write bitmap data*/
+        thumbFile = new File(this.getCacheDir(), "thumb_" + selectedVideoName + ".png");
+        try {
+            thumbFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*//Convert bitmap to byte array*/
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+        byte[] bitmapdata = bos.toByteArray();
+        /*//write the bytes in file*/
+        try {
+            FileOutputStream fos = new FileOutputStream(thumbFile);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return thumbFile;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_PHOTO) {
+                onSelectFromGalleryResult(data);
+            } else if (requestCode == REQUEST_CAMERA) {
+                onCaptureImageResult(data);
+            }
+        }
+
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_VIDEO_TRIMMER:
+                    final Uri selectedUri = data.getData();
+                    if (selectedUri != null) {
+                        startTrimActivity(selectedUri);
+                    } else {
+//                        showToastShort(getString(R.string.toast_cannot_retrieve_selected_video));
+                    }
+                    break;
+                case REQUEST_VIDEO_TRIMMER_RESULT:
+                    final Uri selectedVideoUri = data.getData();
+
+                    if (selectedVideoUri != null) {
+                        selectedVideoFile = data.getData().getPath();
+                        selectedVideoName = data.getData().getLastPathSegment();
+                        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(selectedVideoUri.getPath(),
+                                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);
+
+                        Glide.with(this)
+                                .load(getFileFromBitmap(thumb))
+                                .apply(simpleOptions)
+                                .into(inside_video);
+                    } else {
+//                        showToastShort(getString(R.string.toast_cannot_retrieve_selected_video));
+                    }
+                    break;
+            }
+        }
+    }
 }
 
 

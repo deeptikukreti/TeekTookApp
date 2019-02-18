@@ -75,19 +75,19 @@
             android:progressDrawable="@android:color/transparent"
             android:thumb="@drawable/text_select_handle_middle" />
 
-        <com.deep.videotrimmer.view.ProgressBarView
+        <fusionsoftware.loop.videotrimmer.view.ProgressBarView
             android:id="@+id/timeVideoView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/handlerTop" />
 
-        <com.deep.videotrimmer.view.TimeLineView
+        <fusionsoftware.loop.videotrimmer.view.TimeLineView
             android:id="@+id/timeLineView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/timeVideoView" />
 
-        <com.deep.videotrimmer.view.RangeSeekBarView
+        <fusionsoftware.loop.videotrimmer.view.RangeSeekBarView
             android:id="@+id/timeLineBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,14 +112,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/shape_black_button"
-                android:text="@string/cancel"
+                android:text="Canecl"
                 android:textColor="@android:color/white" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="@color/line_button" />
 
             <Button
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/shape_black_button"
-                android:text="@string/save"
+                android:text="save"
                 android:textColor="@android:color/white" />
 
         </LinearLayout>

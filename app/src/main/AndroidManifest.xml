@@ -65,6 +65,20 @@
             android:screenOrientation="landscape" />
         <activity android:name=".activity.EditProfileActivity" />
         <activity android:name=".activity.FindFriendsActivity"></activity>
+
+        <activity android:name=".videotrimmer.VideoTrimmerActivity" />
+        <activity android:name=".videotrimmer.BaseActivity" />
+
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.deep.videotrimmerexample.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path" />
+        </provider>
     </application>
 
 </manifest>
