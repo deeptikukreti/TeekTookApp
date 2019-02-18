@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    //text sizes
+    <dimen name="textsize10">10sp</dimen>
+    <dimen name="textsize12">12sp</dimen>
+    <dimen name="textsize14">14sp</dimen>
+    <dimen name="textsize16">16sp</dimen>
+    <dimen name="textsize18">18sp</dimen>
+    <dimen name="textsize20">20sp</dimen>
+    <dimen name="textsize22">22sp</dimen>
+    <dimen name="textsize24">24sp</dimen>
+    <dimen name="textsize25">25sp</dimen>
+    <dimen name="textsize26">26sp</dimen>
+    <dimen name="textsize28">28sp</dimen>
+    <dimen name="textsize30">30sp</dimen>
+    <dimen name="textsize32">32sp</dimen>
+    <dimen name="textsize40">40sp</dimen>
+
+    // views sizes
+    <dimen name="size1">1dp</dimen>
+    <dimen name="size2">2dp</dimen>
+    <dimen name="size5">5dp</dimen>
+    <dimen name="size10">10dp</dimen>
+    <dimen name="size15">15dp</dimen>
+    <dimen name="size20">20dp</dimen>
+    <dimen name="size25">25dp</dimen>
+    <dimen name="size30">30dp</dimen>
+    <dimen name="size35">35dp</dimen>
+    <dimen name="size40">40dp</dimen>
+    <dimen name="size45">45dp</dimen>
+    <dimen name="size50">50dp</dimen>
+    <dimen name="size55">55dp</dimen>
+    <dimen name="size60">60dp</dimen>
+    <dimen name="size100">100dp</dimen>
+    <dimen name="size120">120dp</dimen>
+    <dimen name="size140">140dp</dimen>
+    <dimen name="size200">200dp</dimen>
+    <dimen name="size250">250dp</dimen>
+    <dimen name="size300">300dp</dimen>
+
+
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="thumbnail_size">80dp</dimen>
+    <dimen name="recycler_size">100dp</dimen>
+    <dimen name="thumbnail_horizontal_padding">8dp</dimen>
+    <dimen name="thumbnail_vertical_padding">10dp</dimen>
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="margin_horizontal">16dp</dimen>
+    <dimen name="lbl_edit_image_control">100dp</dimen>
+
+</resources>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.EditProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relLayout1">
+            <include layout="@layout/snippet_edit_profile"/>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:layout_marginLeft="@dimen/size20"
+                android:layout_marginRight="@dimen/size20"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/inside_imageview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/size200"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/user_profile" />
+
+                <ImageView
+                    android:id="@+id/outside_imageview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/camera_icon"
+                    android:layout_margin="@dimen/size20"
+                    android:layout_centerInParent="true"
+
+                     />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:text="Profile Photo"
+                  android:layout_below="@id/inside_imageview"/>
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:layout_marginLeft="@dimen/size20"
+                android:layout_marginRight="@dimen/size20"
+                android:layout_height="wrap_content">
+                <VideoView
+                    android:id="@+id/inside_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/size300"
+                    android:layout_centerInParent="true"
+                   />
+
+                <ImageView
+                    android:id="@+id/outside_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/edit_video_icon"
+                    android:layout_margin="@dimen/size20"
+                    android:layout_centerInParent="true"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:text="Profile Video"
+                    android:layout_marginTop="@dimen/size30"
+                    android:layout_below="@id/inside_video"/>
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="vertical">
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/size10"
+               android:orientation="horizontal">
+               <TextView
+                   android:layout_width="@dimen/size20"
+                   android:layout_height="@dimen/size20"
+                   android:background="@mipmap/tiktok_user_icon"/>
+
+               <EditText
+                   android:id="@+id/profileName"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:singleLine="true"
+                   android:hint="Name"/>
+           </LinearLayout>
+
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/size10"
+               android:orientation="horizontal">
+               <TextView
+                   android:layout_width="@dimen/size20"
+                   android:layout_height="@dimen/size20"
+                   android:background="@mipmap/tiktok_id_icon"/>
+
+               <TextView
+                   android:id="@+id/tiktok_id_edt"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:singleLine="true"
+                   android:hint="tiktok id"/>
+           </LinearLayout>
+
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="@dimen/size10"
+               android:orientation="horizontal">
+               <TextView
+                   android:layout_width="@dimen/size20"
+                   android:layout_height="@dimen/size20"
+                   android:background="@mipmap/biography_icon"/>
+
+               <EditText
+                   android:id="@+id/bio_edt"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:hint="bio"/>
+           </LinearLayout>
+
+
+       </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

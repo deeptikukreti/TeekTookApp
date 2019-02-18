@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@mipmap/home_icon"
+        android:iconTint="@color/black"
+        app:showAsAction="always"
+        android:title="@string/title_home"
+        />
+    <item
+        android:id="@+id/navigation_notifications"
+        android:icon="@mipmap/feedback_icon"
+        android:iconTint="@color/black"
+        app:showAsAction="always"
+        android:title="@string/title_notifications" />
+
+    <item
+        android:id="@+id/navigation_video"
+        android:icon="@mipmap/video_icon"
+        app:showAsAction="always"
+        android:title="Video" />
+
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@mipmap/search_icon"
+        app:showAsAction="always"
+        android:title="@string/title_dashboard" />
+
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@mipmap/edit_profile"
+        app:showAsAction="always"
+        android:title="@string/title_profile" />
+
+</menu>

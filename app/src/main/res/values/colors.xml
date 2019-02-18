@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FE2B54</color>
+    <color name="colorPrimaryDark">#FE2B54</color>
+    <color name="colorAccent">#FE2B54</color>
+    <color name="pink">#FE2B54</color>
+    <color name="black">#000000</color>
+    <color name="sign_up_background">#DFDDDE</color>
+
+    <color name="grey">#bfbfbf</color>
+    <color name="white">#fff</color>
+    <color name="link_blue">#4d94ff</color>
+    <color name="darkRed">#cc0000</color>
+    <color name="colordarkRed">#cc0000</color>
+
+    <color name="mcam_color_light">#FAFAFA</color>
+    <color name="mcam_color_dark">#424242</color>
+</resources>

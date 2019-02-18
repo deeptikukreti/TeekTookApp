@@ -1,0 +1,76 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       >
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/sign_up_background"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileToolBar">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="@dimen/size20"
+                    android:layout_height="@dimen/size20"
+                    android:layout_centerVertical="true"
+                   android:background="@mipmap/user"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:id="@+id/usericon"
+                    android:layout_marginLeft="15dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Abhishek Indralia"
+                    android:textSize="@dimen/textsize14"
+                    android:textColor="@color/black"
+                    android:id="@+id/username"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="15dp" />
+
+
+
+                <TextView
+                    android:id="@+id/profileMenu"
+                    android:layout_width="@dimen/size20"
+                    android:layout_marginTop="@dimen/size10"
+                    android:layout_marginRight="@dimen/size5"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@mipmap/dot_icon"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="@dimen/size40"
+                    android:layout_height="@dimen/size40"
+                    android:background="@mipmap/bell_icon"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:id="@+id/bellicon"
+                    android:layout_toLeftOf="@id/profileMenu"
+                    android:layout_marginLeft="15dp" />
+
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.Toolbar>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+</merge>
