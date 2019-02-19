@@ -57,7 +57,7 @@ public class BaseCameraActivity extends AppCompatActivity {
     private boolean toggleClick = false;
 
     protected void onCreateActivity() {
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
         recordBtn = findViewById(R.id.btn_record);
         recordBtn.setOnClickListener(v -> {
 

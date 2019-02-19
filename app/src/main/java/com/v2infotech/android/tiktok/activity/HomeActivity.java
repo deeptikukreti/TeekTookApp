@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.BottomNavigationViewHelper;
 import com.v2infotech.android.tiktok.camera.BaseCameraActivity;
+import com.v2infotech.android.tiktok.camera.PortrateActivity;
 import com.v2infotech.android.tiktok.fragment.DashboardFragment;
 import com.v2infotech.android.tiktok.fragment.NotificationFragment;
 import com.v2infotech.android.tiktok.fragment.ProfileFragment;
@@ -69,9 +70,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 loadFragment(new ProfileFragment());
                 return true;
             case R.id.navigation_video:
-               loadFragment(new VideoFragment());
-//                Intent intent = new Intent(HomeActivity.this,BaseCameraActivity.class);
-//                startActivity(intent);
+//               loadFragment(new VideoFragment());
+                Intent intent = new Intent(HomeActivity.this, PortrateActivity.class);
+                startActivity(intent);
 
                 return true;
         }
