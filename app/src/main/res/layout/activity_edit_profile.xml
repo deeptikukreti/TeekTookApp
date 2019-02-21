@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
 
@@ -34,15 +34,15 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/inside_imageview"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/size200"
                     android:layout_centerInParent="true"
                     android:src="@drawable/user_profile" />
 
                 <ImageView
                     android:id="@+id/outside_imageview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/size50"
+                    android:layout_height="@dimen/size50"
                     android:src="@mipmap/camera_icon"
                     android:layout_margin="@dimen/size20"
                     android:layout_centerInParent="true"
@@ -55,6 +55,9 @@
                     android:gravity="center"
                     android:layout_height="wrap_content"
                     android:text="Profile Photo"
+                    android:textSize="@dimen/textsize14"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                   android:layout_below="@id/inside_imageview"/>
 
             </RelativeLayout>
@@ -70,15 +73,24 @@
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/inside_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/size300"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size200"
                     android:layout_centerInParent="true"
-                   />
+                  />
+
+
+                <VideoView
+                    android:id="@+id/video_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size200"
+                    android:layout_centerInParent="true"
+                    android:layout_above="@id/inside_video"
+                    />
 
                 <ImageView
                     android:id="@+id/outside_video"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/size50"
+                    android:layout_height="@dimen/size50"
                     android:src="@mipmap/edit_video_icon"
                     android:layout_margin="@dimen/size20"
                     android:layout_centerInParent="true"
@@ -89,7 +101,9 @@
                     android:gravity="center"
                     android:layout_height="wrap_content"
                     android:text="Profile Video"
-                    android:layout_marginTop="@dimen/size30"
+                    android:textSize="@dimen/textsize14"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
                     android:layout_below="@id/inside_video"/>
 
             </RelativeLayout>
@@ -107,8 +121,8 @@
                android:layout_margin="@dimen/size10"
                android:orientation="horizontal">
                <TextView
-                   android:layout_width="@dimen/size20"
-                   android:layout_height="@dimen/size20"
+                   android:layout_width="@dimen/size30"
+                   android:layout_height="@dimen/size30"
                    android:background="@mipmap/tiktok_user_icon"/>
 
                <EditText
@@ -126,15 +140,16 @@
                android:layout_margin="@dimen/size10"
                android:orientation="horizontal">
                <TextView
-                   android:layout_width="@dimen/size20"
-                   android:layout_height="@dimen/size20"
+                   android:layout_width="@dimen/size30"
+                   android:layout_height="@dimen/size30"
                    android:background="@mipmap/tiktok_id_icon"/>
 
-               <TextView
+               <EditText
                    android:id="@+id/tiktok_id_edt"
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
                    android:singleLine="true"
+                   android:editable="false"
                    android:hint="tiktok id"/>
            </LinearLayout>
 
@@ -145,8 +160,8 @@
                android:layout_margin="@dimen/size10"
                android:orientation="horizontal">
                <TextView
-                   android:layout_width="@dimen/size20"
-                   android:layout_height="@dimen/size20"
+                   android:layout_width="@dimen/size30"
+                   android:layout_height="@dimen/size30"
                    android:background="@mipmap/biography_icon"/>
 
                <EditText

@@ -4,7 +4,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/sign_up_background"
+        android:background="@color/white"
         >
 
         <android.support.v7.widget.Toolbar
@@ -45,7 +45,7 @@
                     android:id="@+id/profileMenu"
                     android:layout_width="@dimen/size20"
                     android:layout_marginTop="@dimen/size10"
-                    android:layout_marginRight="@dimen/size5"
+                    android:layout_marginRight="@dimen/size10"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:background="@mipmap/dot_icon"
@@ -61,7 +61,7 @@
                     android:textColor="@color/black"
                     android:id="@+id/bellicon"
                     android:layout_toLeftOf="@id/profileMenu"
-                    android:layout_marginLeft="15dp" />
+                    android:layout_marginRight="@dimen/size30" />
 
 
             </RelativeLayout>

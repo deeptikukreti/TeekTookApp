@@ -1,7 +1,6 @@
 package com.v2infotech.android.tiktok.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,26 +8,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
-import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -45,10 +37,6 @@ import com.v2infotech.android.tiktok.Utils.CircleTransform;
 import com.v2infotech.android.tiktok.Utils.Utility;
 import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
-import com.v2infotech.android.tiktok.model.LoginResponseParser;
-import com.v2infotech.android.tiktok.model.UserProfileResponse;
-import com.v2infotech.android.tiktok.videotrimmer.BaseActivity;
-import com.v2infotech.android.tiktok.videotrimmer.OnSnackbarActionListener;
 import com.v2infotech.android.tiktok.videotrimmer.VideoPicker;
 import com.v2infotech.android.tiktok.videotrimmer.VideoTrimmerActivity;
 
@@ -66,6 +54,7 @@ import fusionsoftware.loop.videotrimmer.utils.FileUtils;
 
 import static com.v2infotech.android.tiktok.videotrimmer.Constants.EXTRA_VIDEO_PATH;
 
+@SuppressWarnings("ALL")
 public class EditProfileActivity extends AppCompatActivity {
     //videtrim.........
 //    ActivityMainBinding mBinder;
@@ -78,8 +67,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private RequestOptions simpleOptions;
     //................
     private ImageView inside_imageview, outside_imageview, outside_video;
-    private TextView save_icon, back_arrow_icon, tiktok_id_edt;
-    private EditText profileName, bio_edt;
+    private TextView save_icon, back_arrow_icon;
+    private EditText profileName, bio_edt,tiktok_id_edt;
     DbHelper dbHelper;
     private static final int INTENT_REQUEST_CODE = 100;
     //  public static final String URL = BASE_URL;
@@ -89,11 +78,14 @@ public class EditProfileActivity extends AppCompatActivity {
     public final int REQUEST_CAMERA = 101;
     public final int SELECT_PHOTO = 102;
     Uri uri = null;
+    Uri selectedVideoUri=null;
     Bitmap bitmapImage;
     Bitmap bm;
     String base64Image;
     AppCompatImageView inside_video;
     private MediaController mediaControls;
+
+    VideoView video_view;
 
 
     // Use this string for part 2 (load media from the internet).
@@ -128,21 +120,15 @@ public class EditProfileActivity extends AppCompatActivity {
             mCurrentPosition = savedInstanceState.getInt(PLAYBACK_TIME);
         }
 
-        // Set up the media controller widget and attach it to the video view.
-//        MediaController controller = new MediaController(this);
-//        controller.setMediaPlayer(inside_video);
-//        inside_video.setMediaController(controller);
-
         inside_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkForPermission();
+                if (checkForPermission()) {
+                    selectVideoDialog();
+                }
+
             }
         });
-        //video trimmr....
-//        mBinder = DataBindingUtil.setContentView(this, R.layout.activity_main);
-//        setUpToolbar("Video Trimmer Example");
-//        mBinder.btnSelectVideo.setOnClickListener(this);
         simpleOptions = new RequestOptions()
                 .centerCrop()
                 .placeholder(R.color.blackOverlay)
@@ -204,6 +190,7 @@ public class EditProfileActivity extends AppCompatActivity {
         tiktok_id_edt = findViewById(R.id.tiktok_id_edt);
         bio_edt = findViewById(R.id.bio_edt);
         back_arrow_icon = findViewById(R.id.back_arrow_icon);
+        video_view = findViewById(R.id.video_view);
 
 
 //        final VideoView videoView = (VideoView)
@@ -213,13 +200,28 @@ public class EditProfileActivity extends AppCompatActivity {
 //                "http://www.ebookfrenzy.com/android_book/movie.mp4");
 //
 
-        SharedPreferences sp = this.getSharedPreferences("USER_PREFS", Context.MODE_PRIVATE);
-        String email = sp.getString("email", "");
-        String id_tiktok = sp.getString("tiktok_id", "");
-        String bio11 = sp.getString("bio", "");
 
-        if (bio11 != null) {
-            bio_edt.setText(bio11);
+        SharedPreferences sp = getSharedPreferences("USER_PREFS", Context.MODE_PRIVATE);
+        String email = sp.getString("name", "");
+        String id_tiktok = sp.getString("tiktok_id", "");
+        String biooo = sp.getString("bio", "");
+        String image_uri1= sp.getString("image_uri", "");
+        String video_uri1 = sp.getString("video_uri", "");
+        if (email != null && id_tiktok != null ) {
+            tiktok_id_edt.setText(id_tiktok);
+            profileName.setText(email);
+           // bio_edt.setText(biooo);
+        }
+        if (video_uri1 != null) {
+            Uri uri_video = Uri.parse(video_uri1);
+            Picasso.with(this).load(uri_video).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_video);
+        }  if (image_uri1 != null) {
+            Uri uri_image = Uri.parse(image_uri1);
+            Picasso.with(this).load(uri_image).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
+        }
+
+        if (biooo != null) {
+            bio_edt.setText(biooo);
         }
 
         LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(email);
@@ -264,7 +266,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });*/
 
         Picasso.with(this).load(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
-        //Picasso.with(this).load(R.drawable.user_profile).transform(new CircleTransform()).into(inside_video);
+        Picasso.with(this).load(R.drawable.user_profile).transform(new CircleTransform()).into(inside_video);
 
         save_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,6 +280,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 editor.putString("tiktok_id", tiktok_id);
                 editor.putString("bio", bio);
                 editor.putString("image_uri", String.valueOf(uri));
+                editor.putString("video_uri", String.valueOf(selectedVideoUri));
                 editor.commit();
 //                DbHelper dbHelper=new DbHelper(getApplicationContext());
 //                UserProfileResponse userProfileResponse=new UserProfileResponse();
@@ -387,7 +390,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     //add bitmap
-    @SuppressLint("StaticFieldLeak")
     private Boolean addUriAsFile(final Uri uri) {
         new AsyncTask<Void, Void, Boolean>() {
             Bitmap bm;
@@ -502,9 +504,9 @@ public class EditProfileActivity extends AppCompatActivity {
         List<String> permissionsNeeded = new ArrayList<String>();
 
         final List<String> permissionsList = new ArrayList<String>();
-        if (!addPermission(permissionsList, android.Manifest.permission.READ_EXTERNAL_STORAGE))
+        if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE))
             permissionsNeeded.add("Storage");
-        if (!addPermission(permissionsList, android.Manifest.permission.CAMERA))
+        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
             permissionsNeeded.add("Camera");
         if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
             permissionsNeeded.add("Write external storage");
@@ -562,14 +564,14 @@ public class EditProfileActivity extends AppCompatActivity {
             case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS: {
                 Map<String, Integer> perms = new HashMap<String, Integer>();
                 // Initial
-                perms.put(android.Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
-                perms.put(android.Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
-                perms.put(android.Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.READ_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
                 // Fill with results
                 for (int i = 0; i < permissions.length; i++)
                     perms.put(permissions[i], grantResults[i]);
-                if (perms.get(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && perms.get(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                if (perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 } else {
                     // Permission Denied
                     Toast.makeText(this, "Permission is Denied", Toast.LENGTH_SHORT)
@@ -653,8 +655,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     //video trimmer.........
-    private void checkForPermission() {
-        new BaseActivity().requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+    private boolean checkForPermission() {
+/*        new BaseActivity().requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 PERMISSION_STORAGE, new BaseActivity.setPermissionListener() {
                     @Override
                     public void onPermissionGranted(int requestCode) {
@@ -676,7 +678,39 @@ public class EditProfileActivity extends AppCompatActivity {
                     public void onPermissionNeverAsk(int requestCode) {
 //                        showPermissionSettingDialog(getString(R.string.permission_gallery_camera));
                     }
-                });
+                });*/
+        List<String> permissionsNeeded = new ArrayList<String>();
+
+
+        final List<String> permissionsList = new ArrayList<String>();
+        if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE))
+            permissionsNeeded.add("Storage");
+        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
+            permissionsNeeded.add("Camera");
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add("Write external storage");
+        if (permissionsList.size() > 0) {
+            if (permissionsNeeded.size() > 0) {
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded.get(0);
+                for (int i = 1; i < permissionsNeeded.size(); i++)
+                    message = message + ", " + permissionsNeeded.get(i);
+                showMessageOKCancel(message,
+                        new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
+                                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                            }
+                        });
+                return false;
+            }
+            requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
     }
 
 
@@ -704,7 +738,7 @@ public class EditProfileActivity extends AppCompatActivity {
         startActivityForResult(videoCapture, REQUEST_VIDEO_TRIMMER);
     }
 
-    private void startTrimActivity(@NonNull Uri uri) {
+    private void startTrimActivity( Uri uri) {
         Intent intent = new Intent(this, VideoTrimmerActivity.class);
         intent.putExtra(EXTRA_VIDEO_PATH, FileUtils.getPath(this, uri));
         startActivityForResult(intent, REQUEST_VIDEO_TRIMMER_RESULT);
@@ -756,7 +790,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                     break;
                 case REQUEST_VIDEO_TRIMMER_RESULT:
-                    final Uri selectedVideoUri = data.getData();
+                      selectedVideoUri = data.getData();
 
                     if (selectedVideoUri != null) {
                         selectedVideoFile = data.getData().getPath();
@@ -766,8 +800,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         Glide.with(this)
                                 .load(getFileFromBitmap(thumb))
-                                .apply(simpleOptions)
+                                .apply(RequestOptions.circleCropTransform())
+                                //.into(inside_video);
                                 .into(inside_video);
+
+//                        String udhdhdh=selectedVideoUri.toString();
+//                        video_view.setVideoPath(udhdhdh);
+
                     } else {
 //                        showToastShort(getString(R.string.toast_cannot_retrieve_selected_video));
                     }

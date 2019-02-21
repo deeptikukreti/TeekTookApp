@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.squareup.picasso.Picasso;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CircleTransform;
@@ -22,7 +21,6 @@ import com.v2infotech.android.tiktok.activity.EditProfileActivity;
 import com.v2infotech.android.tiktok.activity.SideNavigationActivity;
 import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
-import com.v2infotech.android.tiktok.model.UserProfileResponse;
 
 
 public class ProfileFragment extends Fragment {
@@ -44,22 +42,28 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_profile, container, false);
         dbHelper = new DbHelper(getActivity());
-         imageView = view.findViewById(R.id.profile_photo);
+        imageView = view.findViewById(R.id.profile_photo);
         edit_profile_button = view.findViewById(R.id.edit_profile_button);
         id_tiktok_txt = view.findViewById(R.id.id_tiktok_txt);
         username = view.findViewById(R.id.username);
         profileMenu = view.findViewById(R.id.profileMenu);
         user_bio = view.findViewById(R.id.user_bio);
-        Picasso.with(getContext()).load(R.drawable.user_profile).transform(new CircleTransform()).into(imageView);
-
+        Picasso.with(getActivity()).load(R.drawable.user_profile).transform(new CircleTransform()).into(imageView);
         SharedPreferences sp = getActivity().getSharedPreferences("USER_PREFS", Context.MODE_PRIVATE);
         String email = sp.getString("name", "");
         String id_tiktok = sp.getString("tiktok_id", "");
         String biooo = sp.getString("bio", "");
+        String image_uri = sp.getString("image_uri", "");
+        String video_uri = sp.getString("video_uri", "");
         if (email != null && id_tiktok != null && biooo != null) {
             id_tiktok_txt.setText(id_tiktok);
             username.setText(email);
             user_bio.setText(biooo);
+        }
+//
+        if (image_uri != null) {
+            Uri uri_image = Uri.parse(image_uri);
+            Picasso.with(getContext()).load(uri_image).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(imageView);
         }
 /*
         SharedPreferences sp1 = getActivity().getSharedPreferences("USER_PREFS_EDIT", Context.MODE_PRIVATE);
@@ -81,19 +85,19 @@ public class ProfileFragment extends Fragment {
 //            user_bio.setText(userProfileResponse.getUser_Bio());
 //        }
 else {*/
-        else{
+        else {
             LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(email);
-        if (loginResponseData != null) {
+            if (loginResponseData != null) {
 
-            String id_tikok = "@" + loginResponseData.getUserPassword();
-            id_tiktok_txt.setText(id_tikok);
+                String id_tikok = "@" + loginResponseData.getUserPassword();
+                id_tiktok_txt.setText(id_tikok);
 
-            String tik_tokusername = loginResponseData.getUserName();
-            username.setText(tik_tokusername);
+                String tik_tokusername = loginResponseData.getUserName();
+                username.setText(tik_tokusername);
+            }
         }
-    }
 
-     //  }
+        //  }
 
         profileMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,12 +126,12 @@ else {*/
         String id_tiktok = sp.getString("tiktok_id", "");
         String biooo = sp.getString("bio", "");
         String image_uri = sp.getString("image_uri", "");
+        String video_uri = sp.getString("video_uri", "");
         if (email != null && id_tiktok != null && biooo != null) {
             id_tiktok_txt.setText(id_tiktok);
             username.setText(email);
             user_bio.setText(biooo);
-        }
-        else{
+        } else {
             LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(email);
             if (loginResponseData != null) {
 
@@ -138,10 +142,10 @@ else {*/
                 username.setText(tik_tokusername);
             }
         }
-        if(image_uri !=null){
-            Uri uri_image=Uri.parse(image_uri);
+        if (image_uri != null) {
+            Uri uri_image = Uri.parse(image_uri);
             Picasso.with(getContext()).load(uri_image).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(imageView);
-        }
+        } 
 /*
         SharedPreferences sp1 = getActivity().getSharedPreferences("USER_PREFS_EDIT", Context.MODE_PRIVATE);
         String email1 = sp.getString("user_name", "");
@@ -163,6 +167,6 @@ else {*/
 //        }
 else {*/
 
-        }
+    }
     //}
 }
