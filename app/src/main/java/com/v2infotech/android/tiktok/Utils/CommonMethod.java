@@ -80,98 +80,84 @@ public class CommonMethod {
         return false;
     }
 
-    public static String getEmployeeStatus(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("status", "");
+    public static String getUserStatus(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("LOGIN_STATUS", "");
     }
 
-
-
-    public static String getEmployeeName(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("Name", "");
+    public static String getSessionId(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("SESSION_ID", "");
     }
 
-    public static String getEmployeeID(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("EmpId", "");
+    public static String getUserName(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("NAME", "");
     }
 
-    public static String getDOB(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("DOB", "");
+    public static String getUserID(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("USER_ID", "");
     }
 
-    public static String getEmployeeGender(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("Gender", "");
+    public static String getUserEmail(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("EMAIL", "");
     }
 
-    public static String getCategory(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("Category", "");
+    public static String getUserProfilePicture(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("PROFILE_PICTURE", "");
     }
 
-    public static String getNationality(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("Nationality", "");
+    public static String getName(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("NAME", "");
     }
 
-    public static String getEmployeeDOJ(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("DOJ", "");
+    public static String getAdmissionNumber(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("ADMISSION_NUMBER", "");
     }
 
-    public static String getemployeetype(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("ClassTeacher", "");
+    public static String getClassName(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("CLASS_NAME", "");
     }
 
-    public static String getSpecialization(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("Specialization", "");
+    public static String getRollNumber(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("ROLL_NUMBER", "");
+    }
+
+    public static String getPassword(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("PASSWORD", "");
+    }
+
+    public static String getFatherName(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("FATHER_NAME", "");
     }
 
     public static String getAddress(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("Address", "");
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("ADDRESS", "");
     }
 
-    public static String getCity(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("City", "");
+    public static String getFatherOccupation(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("FATHER_OCCUPATION", "");
     }
 
-    public static String getState(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("State", "");
+    public static String getMotherName(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("MOTHER_NAME", "");
     }
 
-    public static String getMobileNo(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("MobileNo", "");
-    }
-
-    public static String getemail(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("email", "");
+    public static String getMotherEducation(Activity conteActivity) {
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("MOTHER_EDUCATION", "");
     }
 
     public static String getMobileNumber(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("MobileNo", "");
+        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("MOBILE_NUMBER", "");
     }
 
-    public static String getleave(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("LeaveType", "");
-    }
-
-    public static String getsrno(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("srno", "");
-    }
-
-    public static String getProfilePhoto(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("ProfilePhoto", "");
-    }
-
-    public static String getapprovel_id(Activity conteActivity) {
-        return PreferenceManager.getDefaultSharedPreferences(conteActivity).getString("is_approver", "");
-    }
-    public static  void clearPrefences(Context context){
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear().apply();
-    }
-    public static void saveLoginPreferences(Context context, String key, String value) {
+    public static void saveStudentListPreferences(Context context, String key, String value) {
         Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putString(key, value);
         editor.commit();
     }
-
+    public static void clearPrefences(Context context){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear().apply();
+    }
     public static boolean copyStream(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[1024];
         while (true) {

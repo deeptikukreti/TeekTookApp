@@ -1,24 +1,35 @@
 package com.v2infotech.android.tiktok.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CommonMethod;
 import com.v2infotech.android.tiktok.Utils.HttpUtility;
+import com.v2infotech.android.tiktok.Utils.Utility;
 import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
 import com.v2infotech.android.tiktok.model.LoginResponseParser;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -191,4 +202,111 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         HttpUtility.disconnect();
         return this.mResponce;
     }
+
+/////////////////////////////////////////////////////////////
+
+ /*   private class UserProfileAsync extends AsyncTask<String, Void, String> {
+        private SignupAsync() {
+        }
+
+        protected String doInBackground(String... params) {
+           // CallServiceGetUserProfile();
+            return null;
+        }
+
+        protected void onPostExecute(String result) {
+            hideProgressDialog();
+            Gson gson = new Gson();
+            try {
+                userProfileResponseParser = (UserProfileResponseParser) gson.fromJson(mResponce, UserProfileResponseParser.class);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+            if (userProfileResponseParser == null) {
+                Log.d("", "GalleryImageAsync");
+                CommonMethod.showAlert(getString(R.string.networkError_Message), getActivity());
+            } else if (userProfileResponseParser.status.equals("200")) {
+                database.deleteAllUserProfile();
+                // for (int i = 0; i < userProfileResponseParser.details.size(); i++) {
+                userProfileResponse.setSadmission(userProfileResponseParser.details.sadmission);
+                userProfileResponse.setProfilePhoto(userProfileResponseParser.details.ProfilePhoto);
+                userProfileResponse.setSname(userProfileResponseParser.details.sname);
+                userProfileResponse.setSclass(userProfileResponseParser.details.sclass);
+                userProfileResponse.setSrollno(userProfileResponseParser.details.srollno);
+                userProfileResponse.setAddress(userProfileResponseParser.details.Address);
+                userProfileResponse.setSfathername(userProfileResponseParser.details.sfathername);
+                userProfileResponse.setFatherOccupation(userProfileResponseParser.details.FatherOccupation);
+                userProfileResponse.setMotherName(userProfileResponseParser.details.MotherName);
+                userProfileResponse.setMotherEducation(userProfileResponseParser.details.MotherEducation);
+                userProfileResponse.setSmobile(userProfileResponseParser.details.smobile);
+                userProfileResponse.setEmail(userProfileResponseParser.details.email);
+                database.insertUserProfileData(userProfileResponse);
+                // }
+                //    rvImageList.setAdapter(new ImageListAdapter(getActivity(), galleryImageResponseParser));
+                // GalleryActivity.this.rvCircularList.setAdapter(new CircularListAdapter(GalleryActivity.this, GalleryActivity.this.galleryImageResponseParser));
+                setName();
+            } else {
+                Log.d("", "thrd");
+                CommonMethod.showAlert(userProfileResponseParser.responseMessage.toString().trim(), getActivity());
+                Log.d("", "tttrttrttt" + (userProfileResponseParser.responseMessage.toString().trim()));
+            }
+        }
+
+        protected void onPreExecute() {
+            showProgressDialog();
+        }
+
+        protected void onProgressUpdate(Void... values) {
+        }
+    }
+
+
+    public void imageUpdate() {
+        if (Utility.isOnline(this)) {
+            //pDialog = new BallPulseIndicatorDialog(context);
+            pDialog.show();
+            String tag_json_obj = "timeStampRequest";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL+UPDATE_USER_PROFILE, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e("Message from server", jsonObject.toString());
+                            // CommonMethod.showAlert("Please upload image done", getActivity());
+                            if (CommonMethod.isOnline(SignupActivity.this)) {
+                                new UserProfileAsync().execute(new String[0]);
+                            } else {
+                                SharedPreferences sp = getActivity().getSharedPreferences("STUDENT_PREFS", Context.MODE_PRIVATE);
+                                String admission_number = sp.getString("ADMISSION_NUMBER", "");
+                                userProfileResponse = database.getUserProfileData(admission_number);
+                                if (userProfileResponse != null) {
+                                    setName();
+                                } else {
+                                    CommonMethod.showAlert(getString(R.string.networkError_Message), this);
+                                }
+                            }
+                            camera.setVisibility(View.GONE);
+                            if (pDialog.isShowing()) {
+                                pDialog.dismiss();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (pDialog.isShowing()) {
+                        pDialog.dismiss();
+                    }
+                    CommonMethod.showAlert("Please upload image  1", getActivity());
+                    Log.e("Message from server", volleyError.toString());
+                }
+            });
+            //AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag_json_obj);
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            Volley.newRequestQueue(getActivity()).add(jsonObjectRequest);
+        } else {
+            CommonMethod.showAlert("Please upload image", getActivity());
+        }
+
+    }*/
 }
