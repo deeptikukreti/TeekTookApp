@@ -20,7 +20,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SET_ALARM" />
 
-
     <application
         android:name=".framework.AppController"
         android:allowBackup="true"
@@ -29,6 +28,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activity.privacy_n_safety_check"></activity>
         <activity android:name=".activity.SignupActivity" />
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
@@ -65,11 +65,9 @@
             android:name=".camera.LandscapeActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".activity.EditProfileActivity" />
-        <activity android:name=".activity.FindFriendsActivity"></activity>
-
+        <activity android:name=".activity.FindFriendsActivity" />
         <activity android:name=".videotrimmer.VideoTrimmerActivity" />
         <activity android:name=".videotrimmer.BaseActivity" />
-
 
         <provider
             android:name="android.support.v4.content.FileProvider"

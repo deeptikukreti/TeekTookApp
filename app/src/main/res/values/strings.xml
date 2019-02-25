@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources >
 
     <string name="app_name">Tiktok</string>
     <string name="app_record">Record Video</string>
@@ -64,7 +64,7 @@
     <string name="allow_other_to_find_me">Allow Others to Find me</string>
     <string name="private_account">Private Account</string>
     <string name="safety">Safety</string>
-    <string name="who_send_commeny">Who can send me comment</string>
+    <string name="who_send_comment">Who can send me comment</string>
     <string name="who_react_to_me">Who can React to me</string>
     <string name="who_can_duet_with_me">Who can duet with me</string>
     <string name="who_send_me_msg">Who can send me Message</string>
