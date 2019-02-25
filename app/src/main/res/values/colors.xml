@@ -16,4 +16,23 @@
     <color name="mcam_color_light">#FAFAFA</color>
     <color name="mcam_color_dark">#424242</color>
     <color name="blackOverlay">#80000000</color>
+
+
+
+    <color name="textColorPrimary">#FFFFFF</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+
+
+    //for exo recyclerview
+
+
+    <color name="twilight_blue">#0a316d</color>
+    <color name="navy">#021430</color>
+    <color name="cool_grey">#9fa6b0</color>
+    <color name="duck_egg_blue">#d6f1f9</color>
+    <color name="sick_green">#acd433</color>
+    <color name="grapefruit">#ff6363</color>
+    <color name="black_63">#a1000000</color>
+    <color name="windows_blue">#3495af</color>
 </resources>

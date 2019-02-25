@@ -113,7 +113,7 @@
     <string name="action_save">SAVE</string>
     <string name="action_open">OPEN</string>
     <string name="profile_photo">Profile Video</string>
-<!--//video trim.....\\-->
+    <!--//video trim.....\\-->
 
     <string name="capture_using_camera">Capture using camera</string>
     <string name="gallery">Gallery</string>
@@ -125,6 +125,11 @@
     <string name="toast_cannot_retrieve_selected_video">Can not retrieve selected video</string>
     <string name="str_cropping_video_please_wait">Cropping Video Please Wait</string>
     <string name="thumb_image_for_cropped_video">Thumb Image for cropped video:</string>
+
+
+    <string name="empty_screen">Oops!! An unexpected error occurred</string>
+    <string name="please_retry">Please retry after sometime</string>
+    <string name="retry">Retry</string>
 
 
 </resources>
