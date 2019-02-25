@@ -31,13 +31,15 @@
         <activity android:name=".activity.privacy_n_safety_check"></activity>
         <activity android:name=".activity.SignupActivity" />
         <activity android:name=".activity.LoginActivity">
+
+        </activity>
+        <activity android:name=".activity.HomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.HomeActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
