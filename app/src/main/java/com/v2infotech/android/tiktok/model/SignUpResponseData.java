@@ -34,9 +34,27 @@ public class SignUpResponseData {
     }
 
 
-    SignUpResponseData() {
+    public SignUpResponseData() {
     }
 
+    public int getStataus() {
+        return Stataus;
+    }
+
+    public void setStataus(int stataus) {
+        Stataus = stataus;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int Stataus;
+    public String message;
 
     public SignUpResponseData(String emailAddress, String userName, String userPassword) {
         this.emailAddress = emailAddress;

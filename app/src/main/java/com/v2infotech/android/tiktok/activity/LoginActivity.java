@@ -25,6 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -54,9 +60,11 @@ import com.v2infotech.android.tiktok.Utils.CircleTransform;
 import com.v2infotech.android.tiktok.Utils.CommonMethod;
 import com.v2infotech.android.tiktok.Utils.Contants;
 import com.v2infotech.android.tiktok.Utils.HttpUtility;
+import com.v2infotech.android.tiktok.Utils.Utility;
 import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
 import com.v2infotech.android.tiktok.model.LoginResponseParser;
+import com.v2infotech.android.tiktok.model.SignUpResponseData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +78,9 @@ import java.util.Map;
 
 import static com.v2infotech.android.tiktok.Utils.Contants.BASE_URL;
 import static com.v2infotech.android.tiktok.Utils.Contants.LOGIN;
+import static com.v2infotech.android.tiktok.Utils.Contants.LOGIN_API;
+import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_API;
+import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_CONTROLLER;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -90,6 +101,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
     String name,password,email;
+    JSONObject jsonObject;
 
     class C04811 implements TextWatcher {
         C04811() {
@@ -158,6 +170,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        jsonObject=new JSONObject();
         FacebookSdk.sdkInitialize(getApplicationContext());
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
 //        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
@@ -178,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         this.user_name_txt.setOnFocusChangeListener(new C04833());
         this.user_password_txt.setOnFocusChangeListener(new C04844());
         FacebookLogin();
-        googleLogin();
+        //googleLogin();
         method();
     }
 
@@ -198,8 +211,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signup_btn.setOnClickListener(this);
         login_btn.setOnClickListener(this);
         facebook.setOnClickListener(this);
-        google.setOnClickListener(this);
+       // google.setOnClickListener(this);
         remember_me_checkbox.setOnClickListener(this);
+        forgot_password_txt.setOnClickListener(this);
     }
 
     @SuppressLint("WrongConstant")
@@ -226,11 +240,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.login_btn:
 
                 if(checkvalidation()) {
+                   String uid= user_name_txt.getText().toString();
+                   String password=user_password_txt.getText().toString();
+                    try {
+                        jsonObject.put("uid",uid);
+                        jsonObject.put("password",password);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                  //  login();
                     DbHelper dbHelper = new DbHelper(this);
                     LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(user_name_txt.getText().toString());
                     if (loginResponseData != null) {
                         this. name =loginResponseData.getUserName();
-                        this. email =loginResponseData.getEmailAddress();
+                        //   this. email =loginResponseData.getEmailAddress();
                         this. password =user_password_txt.getText().toString();
                         String id_tikok="@"+loginResponseData.getUserPassword();
                         if (loginResponseData.getUserPassword().equals(password)) {
@@ -260,7 +283,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 FacebookLogin();
                 return;
             case R.id.google:
-                googleSignIn();
+              //  googleSignIn();
+
+            case R.id.forgot_password_txt:
+                Intent intent2 = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+                startActivity(intent2);
             default:
                 return;
         }
@@ -456,7 +483,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    //login with google....................
+   /* //login with google....................
     public void googleLogin() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -468,7 +495,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
                     }
-                } /* OnConnectionFailedListener */)
+                } *//* OnConnectionFailedListener *//*)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -493,7 +520,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-
+*/
     private void firebaseAuthWithGoogle(final GoogleSignInAccount acct) {
         Log.d(Contants.LOG_TAG, "firebaseAuthWithGoogle:" + acct.getId());
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -522,5 +549,49 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
     }
+
+    //Simple login
+    public void login() {
+        if (Utility.isOnline(this)) {
+            //pDialog = new BallPulseIndicatorDialog(context);
+//            pDialog.show();
+            String tag_json_obj = "timeStampRequest";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + REGISTER_CONTROLLER + LOGIN_API, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.d("Message from server", jsonObject.toString());
+                            try {
+                                String Status = jsonObject.getString("Status");
+                                String Message = jsonObject.getString("Message");
+
+                                Toast.makeText(LoginActivity.this, Status+" "+Message, Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                           // SignUpResponseData signUpResponseData = new SignUpResponseData();
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (pDialog.isShowing()) {
+                        pDialog.dismiss();
+                    }
+                    CommonMethod.showAlert("Please upload image  1", LoginActivity.this);
+                    Log.e("Message from server", volleyError.toString());
+                }
+            });
+            //AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag_json_obj);
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            Volley.newRequestQueue(LoginActivity.this).add(jsonObjectRequest);
+        } else {
+            CommonMethod.showAlert("Please upload image", LoginActivity.this);
+        }
+
+    }
+
 
 }

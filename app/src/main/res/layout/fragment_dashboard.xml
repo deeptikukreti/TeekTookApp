@@ -13,8 +13,8 @@
         app:tabGravity="center"
         android:layout_gravity="center"
         app:tabIndicatorHeight="0dp"
-        app:tabSelectedTextColor="@color/cool_grey"
-        app:tabTextColor="@color/black"
+        app:tabSelectedTextColor="@color/black"
+        app:tabTextColor="@color/cool_grey"
         app:tabBackground="@android:color/transparent"
         app:tabMode="fixed">
     </android.support.design.widget.TabLayout>

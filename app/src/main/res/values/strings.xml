@@ -1,4 +1,4 @@
-<resources >
+<resources>
 
     <string name="app_name">Tiktok</string>
     <string name="app_record">Record Video</string>
@@ -11,6 +11,16 @@
     <string name="emailHint">Email Address</string>
     <string name="password">Your Password</string>
     <string name="passwordHint">Password</string>
+    <string name="phone_hint"> Enter Your Contact Number</string>
+    <string name="phone">Contact Number</string>
+
+    //Forgot password
+    <string name="contact_number">Enter phone number</string>
+    <string name="Enter_otp">Enter OTP</string>
+    <string name="verify_password_btn">Verify OTP</string>
+    <string name="enter_otp_edt_hint">Enter Otp</string>
+
+
 
     // string for login screen
     <string name="login_heading1">You need a TikTok</string>
@@ -51,7 +61,7 @@
     //bottom navigation
     <string name="title_home">Home</string>
     <string name="title_dashboard">Search</string>
-    <string name="title_notifications">Feedback</string>
+    <string name="title_notifications">Feeds</string>
     <string name="title_profile">Profile</string>
 
     //manage my account

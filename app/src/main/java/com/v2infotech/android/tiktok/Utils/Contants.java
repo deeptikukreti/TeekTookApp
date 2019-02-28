@@ -2,7 +2,12 @@ package com.v2infotech.android.tiktok.Utils;
 
 public class Contants {
     public static final String WEBSITE_URL = "http://onlineschoolplanet.com/";
-    public static final String BASE_URL = "http://client.sagatechsys.com/teacherApp/";
+
+    public static final String BASE_URL = "http://webapi.v2infotech.net/api/";
+    public static final String REGISTER_CONTROLLER = "register/";
+    public static final String REGISTER_API = "register";
+    public static final String LOGIN_API = "login";
+
     public static final String APP_DIRECTORY = "/E Directory/";
     //Login module
     public static final String LOGIN = "empLogin.php";
