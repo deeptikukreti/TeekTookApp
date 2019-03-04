@@ -2,6 +2,7 @@ package com.v2infotech.android.tiktok.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -65,6 +66,7 @@ import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
 import com.v2infotech.android.tiktok.model.LoginResponseParser;
 import com.v2infotech.android.tiktok.model.SignUpResponseData;
+import com.v2infotech.android.tiktok.progressbar.BallTriangleDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,8 +79,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.v2infotech.android.tiktok.Utils.Contants.BASE_URL;
-import static com.v2infotech.android.tiktok.Utils.Contants.LOGIN;
 import static com.v2infotech.android.tiktok.Utils.Contants.LOGIN_API;
+import static com.v2infotech.android.tiktok.Utils.Contants.NO_INERNET_CONNECTION;
 import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_API;
 import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_CONTROLLER;
 
@@ -89,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageView user_profile, facebook, google, twitter;
     private Button login_btn, signup_btn;
     private CheckBox remember_me_checkbox;
-    private ProgressDialog pDialog;
+    private BallTriangleDialog pDialog;
     private String mResponce;
     private static final int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleApiClient;
@@ -100,7 +102,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
-    String name,password,email;
+    String name, password, Message;
+    int Status;
     JSONObject jsonObject;
 
     class C04811 implements TextWatcher {
@@ -170,12 +173,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        jsonObject=new JSONObject();
+        SharedPreferences sp = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+        String session_id = sp.getString("session_id", "");
+//        if(session_id!=null) {
+//        }else{
+        jsonObject = new JSONObject();
         FacebookSdk.sdkInitialize(getApplicationContext());
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
 //        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-        this.pDialog = new ProgressDialog(this);
-        this.pDialog.setMessage("Loading...");
         getId();
         this.loginPreferences = getSharedPreferences("loginPrefs", 0);
         this.loginPrefsEditor = this.loginPreferences.edit();
@@ -193,6 +198,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FacebookLogin();
         //googleLogin();
         method();
+
     }
 
     private void getId() {
@@ -211,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signup_btn.setOnClickListener(this);
         login_btn.setOnClickListener(this);
         facebook.setOnClickListener(this);
-       // google.setOnClickListener(this);
+        // google.setOnClickListener(this);
         remember_me_checkbox.setOnClickListener(this);
         forgot_password_txt.setOnClickListener(this);
     }
@@ -223,7 +229,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.remember_me_checkbox:
                 ((InputMethodManager) getSystemService("input_method")).hideSoftInputFromWindow(this.user_name_txt.getWindowToken(), 0);
-                this.name   = this.user_name_txt.getText().toString();
+                this.name = this.user_name_txt.getText().toString();
                 this.password = this.user_password_txt.getText().toString();
                 if (this.remember_me_checkbox.isChecked()) {
                     this.loginPrefsEditor.putBoolean("saveLogin", true);
@@ -239,17 +245,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.login_btn:
 
-                if(checkvalidation()) {
-                   String uid= user_name_txt.getText().toString();
-                   String password=user_password_txt.getText().toString();
+                if (checkvalidation()) {
+                    String uid = user_name_txt.getText().toString();
+                    String password = user_password_txt.getText().toString();
                     try {
-                        jsonObject.put("uid",uid);
-                        jsonObject.put("password",password);
+                        jsonObject.put("uid", uid);
+                        jsonObject.put("password", password);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                  //  login();
-                    DbHelper dbHelper = new DbHelper(this);
+                    login();
+                }
+                 /*   DbHelper dbHelper = new DbHelper(this);
                     LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(user_name_txt.getText().toString());
                     if (loginResponseData != null) {
                         this. name =loginResponseData.getUserName();
@@ -268,11 +275,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         } else {
                             CommonMethod.showAlert("Please enter correct password", LoginActivity.this);
                         }
-                    } else {
-                        CommonMethod.showAlert("User didn't exist", LoginActivity.this);
-                    }
-                }
-
+                    }*/
                 return;
             case R.id.signup_btn:
                 Intent intent1 = new Intent(LoginActivity.this, SignupActivity.class);
@@ -283,7 +286,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 FacebookLogin();
                 return;
             case R.id.google:
-              //  googleSignIn();
+                //  googleSignIn();
 
             case R.id.forgot_password_txt:
                 Intent intent2 = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
@@ -292,6 +295,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 return;
         }
     }
+
     private void doSomethingElse() {
     }
 
@@ -307,80 +311,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return true;
     }
 
-    private class LoginAsync extends AsyncTask<String, Void, String> {
-        private LoginAsync() {
-        }
-
-        protected String doInBackground(String... params) {
-            //      Toast.makeText(Login.this, "okk", Toast.LENGTH_SHORT).show();
-            LoginActivity.this.CallServiceCategory();
-            return null;
-        }
-
-        protected void onPostExecute(String result) {
-            hideProgressDialog();
-            Gson gson = new Gson();
-            try {
-                LoginActivity.this.loginResponceParser = (LoginResponseParser) gson.fromJson(LoginActivity.this.mResponce, LoginResponseParser.class);
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-            }
-            if (LoginActivity.this.loginResponceParser == null) {
-                CommonMethod.showAlert(LoginActivity.this.getString(R.string.networkError_Message), LoginActivity.this);
-            } else if (LoginActivity.this.loginResponceParser.status.equals("200")) {
-//
-//                for (int i = 0; i < loginResponceParser.employeeDetail.size(); i++) {
-//                    LoginActivity.this.startActivity(new Intent(
-//                            LoginActivity.this, SignupActivity.class));
-//                    LoginActivity.this.finish();
-//                }
-            } else {
-                CommonMethod.showAlert(LoginActivity.this.loginResponceParser.responseMessage.toString().trim(), LoginActivity.this);
-            }
-        }
-
-        protected void onPreExecute() {
-
-            LoginActivity.this.showProgressDialog();
-        }
-
-        protected void onProgressUpdate(Void... values) {
-            // hideProgressDialog();
-        }
-    }
-
-
-    private void showProgressDialog() {
-        this.pDialog.show();
-    }
-
-    private void hideProgressDialog() {
-        if (this.pDialog.isShowing()) {
-            this.pDialog.dismiss();
-        }
-    }
-
-    public String CallServiceCategory() {
-        Map<String, String> params = new HashMap();
-        params.put("EmpId", this.user_name_txt.getText().toString().trim());
-        params.put("password", this.user_password_txt.getText().toString().trim());
-        System.out.println("Params" + params);
-        try {
-            HttpUtility.sendPostRequestForLogin(BASE_URL + LOGIN, params);
-            String[] response = HttpUtility.readMultipleLinesRespone();
-            System.out.println("responsesssss" + response);
-            if (0 < response.length) {
-                String line = response[0];
-                this.mResponce = line;
-                System.out.println("zxZAxASXaX " + this.mResponce);
-                return line;
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        HttpUtility.disconnect();
-        return this.mResponce;
-    }
 
     //login with facebook........................
     public void FacebookLogin() {
@@ -462,7 +392,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 md.update(signature.toByteArray());
                 String sign = Base64.encodeToString(md.digest(), Base64.DEFAULT);
                 Log.e("MY KEY HASH:", sign);
-              //  Toast.makeText(getApplicationContext(), sign, Toast.LENGTH_LONG).show();
+                //  Toast.makeText(getApplicationContext(), sign, Toast.LENGTH_LONG).show();
             }
         } catch (PackageManager.NameNotFoundException e) {
         } catch (NoSuchAlgorithmException e) {
@@ -483,19 +413,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-   /* //login with google....................
-    public void googleLogin() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    /* //login with google....................
+     public void googleLogin() {
+         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                 .requestIdToken(getString(R.string.default_web_client_id))
+                 .requestEmail()
+                 .build();
+         mGoogleApiClient = new GoogleApiClient.Builder(this)
+                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+                     @Override
+                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-                    }
-                } *//* OnConnectionFailedListener *//*)
+                     }
+                 } *//* OnConnectionFailedListener *//*)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
@@ -550,11 +480,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    //Simple login
+    //*********************Simple login*********************//
+
+
     public void login() {
         if (Utility.isOnline(this)) {
-            //pDialog = new BallPulseIndicatorDialog(context);
-//            pDialog.show();
+            pDialog = new BallTriangleDialog(this);
+            pDialog.show();
             String tag_json_obj = "timeStampRequest";
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + REGISTER_CONTROLLER + LOGIN_API, jsonObject,
                     new Response.Listener<JSONObject>() {
@@ -562,15 +494,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         public void onResponse(JSONObject jsonObject) {
                             Log.d("Message from server", jsonObject.toString());
                             try {
-                                String Status = jsonObject.getString("Status");
-                                String Message = jsonObject.getString("Message");
-
-                                Toast.makeText(LoginActivity.this, Status+" "+Message, Toast.LENGTH_SHORT).show();
+                                Status = jsonObject.getInt("Status");
+                                Message = jsonObject.getString("Message");
+                                //Toast.makeText(LoginActivity.this, Status + " " + Message, Toast.LENGTH_SHORT).show();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                            if (pDialog.isShowing()) {
+                                pDialog.dismiss();
+                            }
 
-                           // SignUpResponseData signUpResponseData = new SignUpResponseData();
+                            if (Status == 1) {
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("USER_SESSION_ID", 0);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("session_id", Message);
+                                editor.commit();
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                CommonMethod.showAlert(Message, LoginActivity.this);
+                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -578,7 +522,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     if (pDialog.isShowing()) {
                         pDialog.dismiss();
                     }
-                    CommonMethod.showAlert("Please upload image  1", LoginActivity.this);
+                    CommonMethod.showAlert("Network Issues Found", LoginActivity.this);
                     Log.e("Message from server", volleyError.toString());
                 }
             });
@@ -588,10 +532,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             Volley.newRequestQueue(LoginActivity.this).add(jsonObjectRequest);
         } else {
-            CommonMethod.showAlert("Please upload image", LoginActivity.this);
+            CommonMethod.showAlert(NO_INERNET_CONNECTION, LoginActivity.this);
         }
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

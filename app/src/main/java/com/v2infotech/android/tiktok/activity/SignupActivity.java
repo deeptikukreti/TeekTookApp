@@ -26,11 +26,13 @@ import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
 import com.v2infotech.android.tiktok.model.LoginResponseParser;
 import com.v2infotech.android.tiktok.model.SignUpResponseData;
+import com.v2infotech.android.tiktok.progressbar.BallTriangleDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.v2infotech.android.tiktok.Utils.Contants.BASE_URL;
+import static com.v2infotech.android.tiktok.Utils.Contants.NO_INERNET_CONNECTION;
 import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_API;
 import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_CONTROLLER;
 
@@ -38,8 +40,9 @@ import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_CONTROLLER;
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
     EditText full_name_edt, email_address_edt, password_edt, phone_number_txt;
     Button signup_btn;
-    private ProgressDialog pDialog;
-    private String mResponce;
+    private BallTriangleDialog pDialog;
+    private String  message;
+    int status;
     LoginResponseParser loginResponceParser;
     LoginResponseData loginResponseData;
     String name, email, pass, phone_number;
@@ -111,7 +114,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     }
                     register();
                 }
-                DbHelper dbHelper = new DbHelper(this);
+               /* DbHelper dbHelper = new DbHelper(this);
                 this.loginResponseData = new LoginResponseData();
                 this.loginResponseData = dbHelper.getUserDataByLoginId(email);
                 if (this.loginResponseData == null) {
@@ -133,9 +136,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
-                } else {
-                    CommonMethod.showAlert("User Already exist", this);
-                }
+                }*/
+//                else {
+//                    CommonMethod.showAlert("User Already exist", this);
+//                }
 
                 return;
             default:
@@ -146,8 +150,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     public void register() {
         if (Utility.isOnline(this)) {
-            //pDialog = new BallPulseIndicatorDialog(context);
-//            pDialog.show();
+            pDialog = new BallTriangleDialog(this);
+            pDialog.show();
             String tag_json_obj = "timeStampRequest";
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + REGISTER_CONTROLLER + REGISTER_API, jsonObject,
                     new Response.Listener<JSONObject>() {
@@ -155,12 +159,25 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         public void onResponse(JSONObject jsonObject) {
                             Log.d("Message from server", jsonObject.toString());
                             try {
-                                String Status = jsonObject.getString("Status");
-                                String Message = jsonObject.getString("Message");
-
-                                Toast.makeText(SignupActivity.this, Status + " " + Message, Toast.LENGTH_SHORT).show();
+                                status = jsonObject.getInt("Status");
+                                message = jsonObject.getString("Message");
+                              //  Toast.makeText(SignupActivity.this, status + " " + message, Toast.LENGTH_SHORT).show();
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                            }
+                            if (pDialog.isShowing()) {
+                                pDialog.dismiss();
+                            }
+                            if (status==1) {
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("USER_SESSION_ID", 0);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("session_id", message);
+                                editor.commit();
+                                Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                CommonMethod.showAlert(message, SignupActivity.this);
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -169,7 +186,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     if (pDialog.isShowing()) {
                         pDialog.dismiss();
                     }
-                    CommonMethod.showAlert("Please upload image  1", SignupActivity.this);
+                    CommonMethod.showAlert("Network Issues Found", SignupActivity.this);
                     Log.e("Message from server", volleyError.toString());
                 }
             });
@@ -179,7 +196,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             Volley.newRequestQueue(SignupActivity.this).add(jsonObjectRequest);
         } else {
-            CommonMethod.showAlert("Please upload image", SignupActivity.this);
+            CommonMethod.showAlert(NO_INERNET_CONNECTION, SignupActivity.this);
         }
 
     }

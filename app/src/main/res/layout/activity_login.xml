@@ -64,7 +64,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/size10"
-                    android:hint="@string/username"
+                    android:hint="@string/emailid"
                     android:background="@null"
                     android:singleLine="true"
                     android:textColor="@color/black"

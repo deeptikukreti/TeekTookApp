@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.TabFragment1">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.TabFragment2">
 
-
-    <com.v2infotech.android.tiktok.ui.ExoPlayerRecyclerView
-        android:id="@+id/recyclerViewFeed"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#dedede"
-        android:dividerHeight="8dp" />
+        android:overScrollMode="never">
 
+    </android.support.v7.widget.RecyclerView>
 
-</FrameLayout>
+</LinearLayout>

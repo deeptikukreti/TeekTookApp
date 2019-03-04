@@ -3,8 +3,10 @@ package com.v2infotech.android.tiktok.activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,13 +21,11 @@ import android.widget.Toast;
 
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.BottomNavigationViewHelper;
-import com.v2infotech.android.tiktok.camera.BaseCameraActivity;
 import com.v2infotech.android.tiktok.camera.PortrateActivity;
 import com.v2infotech.android.tiktok.fragment.DashboardFragment;
-import com.v2infotech.android.tiktok.fragment.NotificationFragment;
+import com.v2infotech.android.tiktok.fragment.FeedbackFragment;
 import com.v2infotech.android.tiktok.fragment.ProfileFragment;
 import com.v2infotech.android.tiktok.fragment.SearchFragment;
-import com.v2infotech.android.tiktok.fragment.VideoFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,15 +45,18 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        toolbar = getSupportActionBar();
-
-        // load the store fragment by default
-
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
-        loadFragment(new DashboardFragment());
+        SharedPreferences settings = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+        String session_id = settings.getString("session_id", "");
+        if (session_id == null) {
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+        } else {
+            toolbar = getSupportActionBar();
+            // load the store fragment by default
+            BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+            bottomNavigationView.setOnNavigationItemSelectedListener(this);
+            BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+            loadFragment(new DashboardFragment());
+        }
         // toolbar.setTitle("Shop");
     }
 
@@ -81,10 +84,16 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 loadFragment(new SearchFragment());
                 return true;
             case R.id.navigation_notifications:
-                loadFragment(new NotificationFragment());
+                loadFragment(new FeedbackFragment());
                 return true;
             case R.id.navigation_profile:
-                loadFragment(new ProfileFragment());
+                SharedPreferences sp = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+                String session_id = sp.getString("session_id", "");
+                if (session_id != null) {
+                    loadFragment(new ProfileFragment());
+                } else {
+                    startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                }
                 return true;
             case R.id.navigation_video:
 //               loadFragment(new VideoFragment());

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,32 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CircleTransform;
+import com.v2infotech.android.tiktok.Utils.CommonMethod;
+import com.v2infotech.android.tiktok.Utils.Utility;
 import com.v2infotech.android.tiktok.activity.EditProfileActivity;
+import com.v2infotech.android.tiktok.activity.HomeActivity;
+import com.v2infotech.android.tiktok.activity.LoginActivity;
 import com.v2infotech.android.tiktok.activity.SideNavigationActivity;
 import com.v2infotech.android.tiktok.database.DbHelper;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
+import com.v2infotech.android.tiktok.progressbar.BallTriangleDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static com.v2infotech.android.tiktok.Utils.Contants.BASE_URL;
+import static com.v2infotech.android.tiktok.Utils.Contants.LOGIN_API;
+import static com.v2infotech.android.tiktok.Utils.Contants.NO_INERNET_CONNECTION;
+import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_CONTROLLER;
 
 
 public class ProfileFragment extends Fragment {
@@ -30,6 +50,10 @@ public class ProfileFragment extends Fragment {
     DbHelper dbHelper;
     EditText user_bio;
     ImageView imageView;
+    JSONObject jsonObject;
+    BallTriangleDialog pDialog;
+    int Status;
+    String Message;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +128,7 @@ else {*/
             public void onClick(View v) {
                 Intent i = new Intent(getActivity(), SideNavigationActivity.class);
                 startActivity(i);
+                getActivity().finish();
             }
         });
 
@@ -169,4 +194,59 @@ else {*/
 
     }
     //}
+
+    public void login() {
+        if (Utility.isOnline(getActivity())) {
+            pDialog = new BallTriangleDialog(getActivity());
+            pDialog.show();
+            String tag_json_obj = "timeStampRequest";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + REGISTER_CONTROLLER + LOGIN_API, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.d("Message from server", jsonObject.toString());
+                            try {
+                                Status = jsonObject.getInt("Status");
+                                Message = jsonObject.getString("Message");
+                                //Toast.makeText(LoginActivity.this, Status + " " + Message, Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (pDialog.isShowing()) {
+                                pDialog.dismiss();
+                            }
+                            if (Status == 1) {
+                                SharedPreferences pref = getActivity().getSharedPreferences("USER_SESSION_ID", 0);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("session_id", Message);
+                                editor.commit();
+
+                                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                startActivity(intent);
+                               // getActivity().finish();
+                            } else {
+                                CommonMethod.showAlert(Message, getActivity());
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (pDialog.isShowing()) {
+                        pDialog.dismiss();
+                    }
+                    CommonMethod.showAlert("Network Issues Found", getActivity());
+                    Log.e("Message from server", volleyError.toString());
+                }
+            });
+            //AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag_json_obj);
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            Volley.newRequestQueue(getActivity()).add(jsonObjectRequest);
+        } else {
+            CommonMethod.showAlert(NO_INERNET_CONNECTION, getActivity());
+        }
+
+    }
+
 }
