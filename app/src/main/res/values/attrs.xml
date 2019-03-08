@@ -1,0 +1,118 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="RoundImageView">
+        <!-- Specifies whether or not to draw a circular border around the image. -->
+        <attr name="border" format="boolean"></attr>
+        <!-- Specifies the color of the border draw around the image. (if enabled) -->
+        <attr name="border_color" format="color"></attr>
+        <!-- Makes the border this pixels wide. (if enabled) -->
+        <attr name="border_width" format="dimension"></attr>
+        <!-- Specifies whether or not to draw a selector on this view upon touch events. -->
+        <attr name="selector" format="boolean"></attr>
+        <!-- Specifies the color of the selector draw on top of the image upon touch events. (if enabled) -->
+        <attr name="selector_color" format="color"></attr>
+        <!-- Specifies the color of the selector stroke drawn around the image upon touch events. Be sure to provide some opacity. (if enabled) -->
+        <attr name="selector_stroke_color" format="color"></attr>
+        <!-- Makes the selector stroke drawn around the image upon touch events this pixels wide. (if enabled) -->
+        <attr name="selector_stroke_width" format="dimension"></attr>
+        <!-- Specifies whether or not to draw a shadow around your circular image. -->
+        <attr name="shadow" format="boolean"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="CustomRoundImageViewTheme">
+        <attr name="roundImageViewViewStyle" format="reference" />
+    </declare-styleable>
+
+
+    <!--for custom CircularImageView-->
+    <declare-styleable name="CircularImageView">
+        <attr name="border_circular" format="boolean" />
+        <!-- <attr name="border_width" format="dimension"></attr> <attr name="border_color" format="color"></attr> -->
+        <attr name="shadow_circular" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="Theme">
+        <attr name="circularImageViewStyle" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width_circular" format="dimension" />
+        <attr name="border_color_circular" format="color" />
+    </declare-styleable>
+    <!--for custom  spots_dialog-->
+    <declare-styleable name="Dialog">
+        <attr name="DialogTitleAppearance" format="reference" />
+        <attr name="DialogTitleText" format="reference|string" />
+        <attr name="DialogSpotColor" format="reference|color" />
+        <attr name="DialogSpotCount" format="integer" />
+    </declare-styleable>
+    <!--custom progress dilog-->
+    <declare-styleable name="BallPulseLoadingIndicatorView">
+        <attr name="minWidth" format="dimension" />
+        <attr name="maxWidth" format="dimension"/>
+        <attr name="minHeight" format="dimension" />
+        <attr name="maxHeight" format="dimension"/>
+        <attr name="indicatorName" format="string"/>
+        <attr name="indicatorColor" format="color"/>
+    </declare-styleable>
+<!--for viewpagwer-->
+    <declare-styleable name="SpringIndicator">
+
+        <!--tab text color -->
+        <attr name="siTextColor" format="reference"/>
+
+        <!--tab text color which is selected-->
+        <attr name="siSelectedTextColor" format="reference"/>
+
+        <!--tab item bg -->
+        <attr name="siTextBg" format="reference"/>
+
+        <!--tab text size-->
+        <attr name="siTextSize" format="dimension"/>
+
+        <!--indicator bg color-->
+        <attr name="siIndicatorColor" format="reference"/>
+
+        <!--indicator bg colors. should equals your titles count-->
+        <attr name="siIndicatorColors" format="reference"/>
+
+        <!--max indicator radius-->
+        <attr name="siRadiusMax" format="dimension"/>
+
+        <!--min indicator radius when moving-->
+        <attr name="siRadiusMin" format="dimension"/>
+
+    </declare-styleable>
+
+
+
+   -->
+
+    <!--<declare-styleable name="BallGridIndicatorView">-->
+        <!--<attr name="minWidths" format="dimension" />-->
+        <!--<attr name="maxWidths" format="dimension"/>-->
+        <!--<attr name="minHeights" format="dimension" />-->
+        <!--<attr name="maxHeights" format="dimension"/>-->
+        <!--<attr name="indicatorNames" format="string"/>-->
+        <!--<attr name="indicatorColors" format="color"/>-->
+    <!--</declare-styleable>-->
+
+    <!--<declare-styleable name="PacmanIndicatorView">-->
+        <!--<attr name="minWidthss" format="dimension" />-->
+        <!--<attr name="maxWidthss" format="dimension"/>-->
+        <!--<attr name="minHeightss" format="dimension" />-->
+        <!--<attr name="maxHeightss" format="dimension"/>-->
+        <!--<attr name="indicatorNamess" format="string"/>-->
+        <!--<attr name="indicatorColorss" format="color"/>-->
+    <!--</declare-styleable>-->
+
+    <!--for track order status bar -->
+
+</resources>
