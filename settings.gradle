@@ -1,1 +1,1 @@
-include ':app', ':camerarecoder', ':videotrimmer'
+include ':app', ':camerarecoder', ':videotrimmer', ':xvideoplayer'

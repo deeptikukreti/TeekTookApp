@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.xvideoplayer.MxVideoPlayer;
+import com.example.xvideoplayer.MxVideoPlayerWidget;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CircularImageView;
 import com.v2infotech.android.tiktok.model.VideoInfo;
@@ -54,6 +56,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyCl
 
     @Override
     public void onBindViewHolder(@NonNull final FollowingAdapter.MyClass myClass, final int i) {
+        myClass.videoPlayerWidget.startPlay(resultList.get(i).getUrl(), MxVideoPlayer.SCREEN_LAYOUT_LIST);
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(5000);
         rotate.setRepeatCount(Animation.INFINITE);
@@ -79,10 +82,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyCl
     public class MyClass extends RecyclerView.ViewHolder {
 
         CircularImageView rotate_profile;
+        MxVideoPlayerWidget videoPlayerWidget;
 
         public MyClass(View itemView) {
             super(itemView);
             rotate_profile = itemView.findViewById(R.id.rotate_profile);
+            videoPlayerWidget = (MxVideoPlayerWidget) itemView.findViewById(R.id.list_video_player);
         }
     }
 }

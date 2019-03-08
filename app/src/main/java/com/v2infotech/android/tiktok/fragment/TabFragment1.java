@@ -60,7 +60,22 @@ public class TabFragment1 extends Fragment {
     private List<VideoInfo> getDataList() {
         List<VideoInfo> videoInfoList = new ArrayList<>();
         videoInfo = new VideoInfo();
-        videoInfo.setUrl("");
+        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+        videoInfoList.add(videoInfo);
+        videoInfo = new VideoInfo();
+        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4");
+        videoInfoList.add(videoInfo);
+        videoInfo = new VideoInfo();
+        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4");
+        videoInfoList.add(videoInfo);
+        videoInfo = new VideoInfo();
+        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+        videoInfoList.add(videoInfo);
+        videoInfo = new VideoInfo();
+        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
+        videoInfoList.add(videoInfo);
+        videoInfo = new VideoInfo();
+        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
         videoInfoList.add(videoInfo);
         return videoInfoList;
     }
