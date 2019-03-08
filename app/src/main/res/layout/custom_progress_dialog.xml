@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="#00000000"-->
+    <!--android:orientation="horizontal">-->
+
+    <com.v2infotech.android.tiktok.progressbar.BallTriangleLoadingIndicatorView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:indicatorColor="@color/colorAccent"/>
+
+    <!--<TextView
+        android:id="@+id/spots_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text=""
+        android:textAppearance="?attr/DialogTitleAppearance"
+        android:textSize="16sp" />-->
+</LinearLayout>
