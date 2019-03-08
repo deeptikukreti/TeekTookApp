@@ -56,7 +56,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyCl
 
     @Override
     public void onBindViewHolder(@NonNull final FollowingAdapter.MyClass myClass, final int i) {
-        myClass.videoPlayerWidget.startPlay(resultList.get(i).getUrl(), MxVideoPlayer.SCREEN_LAYOUT_LIST);
+        myClass.videoPlayerWidget.startPlay("http://112.253.22.163/4/p/p/q/v/ppqvlatwcebccqgrthiutjkityurza/hc.yinyuetai.com/59EC014EDDFE31808075899973863AAD.flv", MxVideoPlayer.SCREEN_LAYOUT_LIST);
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(5000);
         rotate.setRepeatCount(Animation.INFINITE);

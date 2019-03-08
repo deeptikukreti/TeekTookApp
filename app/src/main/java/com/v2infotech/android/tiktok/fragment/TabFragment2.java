@@ -48,31 +48,17 @@ public class TabFragment2 extends Fragment {
 
     private void init() {
         recycler_view = view.findViewById(R.id.recycler_view);
-        mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
-        mSensorEventListener = new MxVideoPlayer.MxAutoFullscreenListener();
+
         recycler_view.setLayoutManager(new LinearLayoutManager(context));
         recycler_view.setAdapter(new FollowingAdapter(context, getDataList()));
+        mSensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        mSensorEventListener = new MxVideoPlayer.MxAutoFullscreenListener();
     }
 
     private List<VideoInfo> getDataList() {
         List<VideoInfo> videoInfoList = new ArrayList<>();
         videoInfo = new VideoInfo();
         videoInfo.setUrl("http://112.253.22.163/4/p/p/q/v/ppqvlatwcebccqgrthiutjkityurza/hc.yinyuetai.com/59EC014EDDFE31808075899973863AAD.flv");
-        videoInfoList.add(videoInfo);
-        videoInfo = new VideoInfo();
-        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4");
-        videoInfoList.add(videoInfo);
-        videoInfo = new VideoInfo();
-        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4");
-        videoInfoList.add(videoInfo);
-        videoInfo = new VideoInfo();
-        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
-        videoInfoList.add(videoInfo);
-        videoInfo = new VideoInfo();
-        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
-        videoInfoList.add(videoInfo);
-        videoInfo = new VideoInfo();
-        videoInfo.setUrl("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
         videoInfoList.add(videoInfo);
         return videoInfoList;
     }
