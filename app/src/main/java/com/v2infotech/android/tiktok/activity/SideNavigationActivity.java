@@ -226,7 +226,7 @@ public class SideNavigationActivity extends AppCompatActivity {
                                 settings.edit().clear().commit();
                                 //  String session_id = settings.getString("session_id", "");
                                 //  Toast.makeText(SideNavigationActivity.this, session_id, Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SideNavigationActivity.this, LoginActivity.class));
+                                startActivity(new Intent(SideNavigationActivity.this, HomeActivity.class));
                                 finish();
 
                             } else {
@@ -256,6 +256,5 @@ public class SideNavigationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(SideNavigationActivity.this, ProfileFragment.class));
     }
 }

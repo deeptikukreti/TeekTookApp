@@ -20,6 +20,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,17 +29,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CircleTransform;
+import com.v2infotech.android.tiktok.Utils.CommonMethod;
 import com.v2infotech.android.tiktok.Utils.Utility;
 import com.v2infotech.android.tiktok.database.DbHelper;
+import com.v2infotech.android.tiktok.fragment.ProfileFragment;
 import com.v2infotech.android.tiktok.model.LoginResponseData;
+import com.v2infotech.android.tiktok.model.UserProfileResponse;
+import com.v2infotech.android.tiktok.progressbar.BallTriangleDialog;
 import com.v2infotech.android.tiktok.videotrimmer.VideoPicker;
 import com.v2infotech.android.tiktok.videotrimmer.VideoTrimmerActivity;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -52,68 +67,75 @@ import java.util.Map;
 
 import fusionsoftware.loop.videotrimmer.utils.FileUtils;
 
+import static com.android.volley.Request.Method.POST;
+import static com.v2infotech.android.tiktok.Utils.Contants.BASE_URL;
+import static com.v2infotech.android.tiktok.Utils.Contants.GET_PROFILE_API;
+import static com.v2infotech.android.tiktok.Utils.Contants.NO_INERNET_CONNECTION;
+import static com.v2infotech.android.tiktok.Utils.Contants.PROFILE_CONTROLLER;
+import static com.v2infotech.android.tiktok.Utils.Contants.UPDATE_PROFILE_API;
 import static com.v2infotech.android.tiktok.videotrimmer.Constants.EXTRA_VIDEO_PATH;
 
 @SuppressWarnings("ALL")
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
     //videtrim.........
 //    ActivityMainBinding mBinder;
     public static final int PERMISSION_STORAGE = 100;
     private final int REQUEST_VIDEO_TRIMMER_RESULT = 342;
-
     private final int REQUEST_VIDEO_TRIMMER = 0x12;
     private File thumbFile;
     private String selectedVideoName = null, selectedVideoFile = null;
     private RequestOptions simpleOptions;
-    //................
     private ImageView inside_imageview, outside_imageview, outside_video;
     private TextView save_icon, back_arrow_icon;
-    private EditText profileName, bio_edt,tiktok_id_edt;
+    private EditText profileName, bio_edt, tiktok_id_edt;
     DbHelper dbHelper;
     private static final int INTENT_REQUEST_CODE = 100;
-    //  public static final String URL = BASE_URL;
     private String mImageUrl = "";
     private String userChoosenTask;
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     public final int REQUEST_CAMERA = 101;
     public final int SELECT_PHOTO = 102;
     Uri uri = null;
-    Uri selectedVideoUri=null;
+    Uri selectedVideoUri = null;
     Bitmap bitmapImage;
     Bitmap bm;
     String base64Image;
     AppCompatImageView inside_video;
     private MediaController mediaControls;
-
     VideoView video_view;
-
-
     // Use this string for part 2 (load media from the internet).
     private static final String VIDEO_SAMPLE =
             "https://developers.google.com/training/images/tacoma_narrows.mp4";
-
-
     // Current playback position (in milliseconds).
     private int mCurrentPosition = 0;
-
     // Tag for the instance state bundle.
     private static final String PLAYBACK_TIME = "play_time";
-
-
     // Request code for user select video file.
     private static final int REQUEST_CODE_SELECT_VIDEO_FILE = 1;
-
     // Request code for require android READ_EXTERNAL_PERMISSION.
     private static final int REQUEST_CODE_READ_EXTERNAL_PERMISSION = 2;
-
     // Save local video file uri.
     private Uri videoFileUri = null;
+    String email, name, bio;
+    UserProfileResponse userProfileResponse = new UserProfileResponse();
+    private List<UserProfileResponse> userdata = new ArrayList<UserProfileResponse>();
+    JSONObject jsonObject = new JSONObject();
+    BallTriangleDialog pDialog;
+    int Status;
+    String Message, session_id,pic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         dbHelper = new DbHelper(EditProfileActivity.this);
+        userdata = dbHelper.GetAllUserListData();
+        for (int i = 0; i < userdata.size(); i++) {
+            email = userdata.get(i).getEmail();
+            name = userdata.get(i).getName();
+            bio = userdata.get(i).getDescription();
+            pic=userdata.get(i).getProfile_Pic();
+        }
         getIds();
 
         if (savedInstanceState != null) {
@@ -191,44 +213,43 @@ public class EditProfileActivity extends AppCompatActivity {
         bio_edt = findViewById(R.id.bio_edt);
         back_arrow_icon = findViewById(R.id.back_arrow_icon);
         video_view = findViewById(R.id.video_view);
-
-
+        save_icon.setOnClickListener(this);
+        Picasso.with(this).load(pic).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
 //        final VideoView videoView = (VideoView)
 //                findViewById(R.id.videoView1);
 
 //        inside_video.setVideoPath(
 //                "http://www.ebookfrenzy.com/android_book/movie.mp4");
-//
 
+//        SharedPreferences sp = getSharedPreferences("USER_PREFS", Context.MODE_PRIVATE);
+//        String email = sp.getString("name", "");
+//        String id_tiktok = sp.getString("tiktok_id", "");
+//        String biooo = sp.getString("bio", "");`
+//        String image_uri1 = sp.getString("image_uri", "");
+//        String video_uri1 = sp.getString("video_uri", "");
+        if (name != null && email != null) {
+            tiktok_id_edt.setText(email);
+            profileName.setText(name);
+            // bio_edt.setText(biooo);
+        }
+//        if (video_uri1 != null) {
+//            Uri uri_video = Uri.parse(video_uri1);
+//            Picasso.with(this).load(uri_video).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_video);
+//        }
+//        if (image_uri1 != null) {
+//            Uri uri_image = Uri.parse(image_uri1);
+//            Picasso.with(this).load(uri_image).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
+//        }
 
-        SharedPreferences sp = getSharedPreferences("USER_PREFS", Context.MODE_PRIVATE);
-        String email = sp.getString("name", "");
-        String id_tiktok = sp.getString("tiktok_id", "");
-        String biooo = sp.getString("bio", "");
-        String image_uri1= sp.getString("image_uri", "");
-        String video_uri1 = sp.getString("video_uri", "");
-        if (email != null && id_tiktok != null ) {
-            tiktok_id_edt.setText(id_tiktok);
-            profileName.setText(email);
-           // bio_edt.setText(biooo);
-        }
-        if (video_uri1 != null) {
-            Uri uri_video = Uri.parse(video_uri1);
-            Picasso.with(this).load(uri_video).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_video);
-        }  if (image_uri1 != null) {
-            Uri uri_image = Uri.parse(image_uri1);
-            Picasso.with(this).load(uri_image).placeholder(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
+        if (bio != null) {
+            bio_edt.setText(bio);
         }
 
-        if (biooo != null) {
-            bio_edt.setText(biooo);
-        }
-
-        LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(email);
-        if (loginResponseData != null) {
-            profileName.setText(loginResponseData.getUserName());
-            tiktok_id_edt.setText(id_tiktok);
-        }
+//        LoginResponseData loginResponseData = dbHelper.getUserDataByLoginId(email);
+//        if (loginResponseData != null) {
+//            profileName.setText(loginResponseData.getUserName());
+//            tiktok_id_edt.setText(id_tiktok);
+//        }
 
         back_arrow_icon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,33 +286,33 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });*/
 
-        Picasso.with(this).load(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
+        //Picasso.with(this).load(R.drawable.user_profile).transform(new CircleTransform()).into(inside_imageview);
         Picasso.with(this).load(R.drawable.user_profile).transform(new CircleTransform()).into(inside_video);
-
-        save_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String user_name = profileName.getText().toString();
-                String tiktok_id = tiktok_id_edt.getText().toString();
-                String bio = bio_edt.getText().toString();
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("USER_PREFS", 0);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("name", user_name);
-                editor.putString("tiktok_id", tiktok_id);
-                editor.putString("bio", bio);
-                editor.putString("image_uri", String.valueOf(uri));
-                editor.putString("video_uri", String.valueOf(selectedVideoUri));
-                editor.commit();
-//                DbHelper dbHelper=new DbHelper(getApplicationContext());
-//                UserProfileResponse userProfileResponse=new UserProfileResponse();
-//                userProfileResponse.setUser_Name(user_name);
-//                userProfileResponse.setUser_tiktok_id(tiktok_id);
-//                userProfileResponse.setUser_Bio(bio);
-//                dbHelper.upsertUserProfileData(userProfileResponse);
-
-                onBackPressed();
-            }
-        });
+//
+//        save_icon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String user_name = profileName.getText().toString();
+//                String tiktok_id = tiktok_id_edt.getText().toString();
+//                String bio = bio_edt.getText().toString();
+//                SharedPreferences pref = getApplicationContext().getSharedPreferences("USER_PREFS", 0);
+//                SharedPreferences.Editor editor = pref.edit();
+//                editor.putString("name", user_name);
+//                editor.putString("tiktok_id", tiktok_id);
+//                editor.putString("bio", bio);
+//                editor.putString("image_uri", String.valueOf(uri));
+//                editor.putString("video_uri", String.valueOf(selectedVideoUri));
+//                editor.commit();
+////                DbHelper dbHelper=new DbHelper(getApplicationContext());
+////                UserProfileResponse userProfileResponse=new UserProfileResponse();
+////                userProfileResponse.setUser_Name(user_name);
+////                userProfileResponse.setUser_tiktok_id(tiktok_id);
+////                userProfileResponse.setUser_Bio(bio);
+////                dbHelper.upsertUserProfileData(userProfileResponse);
+//
+//                onBackPressed();
+//            }
+//        });
 
     }
 
@@ -584,7 +605,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-
     private void initializePlayer() {
         // Show the "Buffering..." message while the video loads.
         //  mBufferingTextView.setVisibility(VideoView.VISIBLE);
@@ -630,8 +650,6 @@ public class EditProfileActivity extends AppCompatActivity {
 //                    }
 //                });
     }
-
-
     // Release all media-related resources. In a more complicated app this
     // might involve unregistering listeners or releasing audio focus.
 //    private void releasePlayer() {
@@ -650,9 +668,6 @@ public class EditProfileActivity extends AppCompatActivity {
 //                    "/raw/" + mediaName);
 //        }
 //    }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     //video trimmer.........
     private boolean checkForPermission() {
@@ -713,7 +728,6 @@ public class EditProfileActivity extends AppCompatActivity {
         return true;
     }
 
-
     private void selectVideoDialog() {
         new VideoPicker(this) {
             @Override
@@ -738,7 +752,7 @@ public class EditProfileActivity extends AppCompatActivity {
         startActivityForResult(videoCapture, REQUEST_VIDEO_TRIMMER);
     }
 
-    private void startTrimActivity( Uri uri) {
+    private void startTrimActivity(Uri uri) {
         Intent intent = new Intent(this, VideoTrimmerActivity.class);
         intent.putExtra(EXTRA_VIDEO_PATH, FileUtils.getPath(this, uri));
         startActivityForResult(intent, REQUEST_VIDEO_TRIMMER_RESULT);
@@ -790,7 +804,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                     break;
                 case REQUEST_VIDEO_TRIMMER_RESULT:
-                      selectedVideoUri = data.getData();
+                    selectedVideoUri = data.getData();
 
                     if (selectedVideoUri != null) {
                         selectedVideoFile = data.getData().getPath();
@@ -813,6 +827,78 @@ public class EditProfileActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.save_icon:
+                SharedPreferences sp = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+                session_id = sp.getString("session_id", "");
+                String user_name = profileName.getText().toString();
+                String tiktok_id = tiktok_id_edt.getText().toString();
+                String bio = bio_edt.getText().toString();
+                try {
+                    jsonObject.put("name", user_name);
+                    jsonObject.put("description", bio);
+                    jsonObject.put("sessid", session_id);
+                    jsonObject.put("Profile_Pic", base64Image);
+                    Log.d("jsondata",base64Image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                updateUserProfile();
+                return;
+            default:
+                return;
+        }
+    }
+
+    public void updateUserProfile() {
+        if (Utility.isOnline(this)) {
+            pDialog = new BallTriangleDialog(this);
+            pDialog.show();
+            String tag_json_obj = "timeStampRequest";
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(POST, BASE_URL + PROFILE_CONTROLLER + UPDATE_PROFILE_API, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.d("Message from server", jsonObject.toString());
+
+                            try {
+                                Status = jsonObject.getInt("Status");
+                                Message = jsonObject.getString("Message");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (Status == 1) {
+//                                Intent intent = new Intent(EditProfileActivity.this, ProfileFragment.class);
+//                                startActivity(intent);
+ //onBackPressed();
+                              finish();
+                            } else {
+                                CommonMethod.showAlert(Message, EditProfileActivity.this);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    if (pDialog.isShowing()) {
+                        pDialog.dismiss();
+                    }
+                    CommonMethod.showAlert("Network Issues Found", EditProfileActivity.this);
+                    Log.e("Message from server", volleyError.toString());
+                }
+            });
+            //AppController.getInstance().addToRequestQueue(jsonObjectRequest, tag_json_obj);
+            jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            Volley.newRequestQueue(EditProfileActivity.this).add(jsonObjectRequest);
+        } else {
+            CommonMethod.showAlert(NO_INERNET_CONNECTION, EditProfileActivity.this);
+        }
+
     }
 }
 

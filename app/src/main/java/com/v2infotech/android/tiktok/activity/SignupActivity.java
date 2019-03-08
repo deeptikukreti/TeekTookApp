@@ -1,6 +1,7 @@
 package com.v2infotech.android.tiktok.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -169,6 +170,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                                 pDialog.dismiss();
                             }
                             if (status==1) {
+                                SharedPreferences settings = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+                                settings.edit().clear().commit();
                                 SharedPreferences pref = getApplicationContext().getSharedPreferences("USER_SESSION_ID", 0);
                                 SharedPreferences.Editor editor = pref.edit();
                                 editor.putString("session_id", message);

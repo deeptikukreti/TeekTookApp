@@ -12,6 +12,7 @@ public class Contants {
     public static final String LOGOUT_API = "logout";
     public static final String FORGOT_PASSWORD_API = "forgotpass";
     public static final String GET_PROFILE_API = "getdetails";
+    public static final String UPDATE_PROFILE_API = "update";
 
 
     public static final String NO_INERNET_CONNECTION = "No Internet Connection";
@@ -23,11 +24,11 @@ public class Contants {
     public static final String DATABASE_NAME = "Tiktok.db";
 
     //user profile strings
-    public static final String IMAGE_PROFILE = "Image_profile";
-    public static final String IMAGE_VIDEO = "Image_Video";
-    public static final String TIKTOK_USER_NAME = "User_Name";
-    public static final String TIKTOK_ID = "User_tiktok_id";
-    public static final String TIKTOK_USER_BIO = "User_Bio";
+    public static final String TIKTOK_USER_NAME = "name";
+    public static final String TIKTOK_CONTACT = "contact";
+    public static final String TIKTOK_EMAIL = "email";
+    public static final String USER_PROFILE_PIC = "Profile_Pic";
+    public static final String USER_BIO = "description";
 
 
 }

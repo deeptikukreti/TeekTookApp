@@ -1,60 +1,55 @@
 package com.v2infotech.android.tiktok.model;
 
-import com.google.gson.annotations.SerializedName;
 
 public class UserProfileResponse {
 
-        @SerializedName("Image_profile")
-        public String Image_profile;
-        @SerializedName("Image_Video")
-        public String Image_video;
-        @SerializedName("User_Name")
-        public String User_Name;
-        @SerializedName("User_tiktok_id")
-        public String User_tiktok_id;
-        @SerializedName("User_Bio")
-        public String User_Bio;
+        public String name;
+        public String contact;
+        public String email;
+        public String Profile_Pic;
+        public String description;
 
-    public String getImage_profile() {
-        return Image_profile;
+    public String getName() {
+        return name;
     }
 
-    public void setImage_profile(String image_profile) {
-        Image_profile = image_profile;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getImage_video() {
-        return Image_video;
+    public String getContact() {
+        return contact;
     }
 
-    public void setImage_video(String image_video) {
-        Image_video = image_video;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
-    public String getUser_Name() {
-        return User_Name;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUser_Name(String user_Name) {
-        User_Name = user_Name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getUser_tiktok_id() {
-        return User_tiktok_id;
+    public String getProfile_Pic() {
+        return Profile_Pic;
     }
 
-    public void setUser_tiktok_id(String user_tiktok_id) {
-        User_tiktok_id = user_tiktok_id;
+    public void setProfile_Pic(String profile_Pic) {
+        Profile_Pic = profile_Pic;
     }
 
-    public String getUser_Bio() {
-        return User_Bio;
+    public String getDescription() {
+        return description;
     }
 
-    public void setUser_Bio(String user_Bio) {
-        User_Bio = user_Bio;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
+
 
 
 

@@ -1,14 +1,12 @@
 package com.v2infotech.android.tiktok.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -42,46 +40,33 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.squareup.picasso.Picasso;
 import com.v2infotech.android.tiktok.R;
 import com.v2infotech.android.tiktok.Utils.CircleTransform;
 import com.v2infotech.android.tiktok.Utils.CommonMethod;
 import com.v2infotech.android.tiktok.Utils.Contants;
-import com.v2infotech.android.tiktok.Utils.HttpUtility;
 import com.v2infotech.android.tiktok.Utils.Utility;
-import com.v2infotech.android.tiktok.database.DbHelper;
-import com.v2infotech.android.tiktok.model.LoginResponseData;
 import com.v2infotech.android.tiktok.model.LoginResponseParser;
-import com.v2infotech.android.tiktok.model.SignUpResponseData;
 import com.v2infotech.android.tiktok.progressbar.BallTriangleDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.v2infotech.android.tiktok.Utils.Contants.BASE_URL;
 import static com.v2infotech.android.tiktok.Utils.Contants.LOGIN_API;
 import static com.v2infotech.android.tiktok.Utils.Contants.NO_INERNET_CONNECTION;
-import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_API;
 import static com.v2infotech.android.tiktok.Utils.Contants.REGISTER_CONTROLLER;
 
 
@@ -175,8 +160,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         SharedPreferences sp = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
         String session_id = sp.getString("session_id", "");
-//        if(session_id!=null) {
-//        }else{
         jsonObject = new JSONObject();
         FacebookSdk.sdkInitialize(getApplicationContext());
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -503,8 +486,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             if (pDialog.isShowing()) {
                                 pDialog.dismiss();
                             }
-
                             if (Status == 1) {
+                                SharedPreferences settings = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+                                settings.edit().clear().commit();
                                 SharedPreferences pref = getApplicationContext().getSharedPreferences("USER_SESSION_ID", 0);
                                 SharedPreferences.Editor editor = pref.edit();
                                 editor.putString("session_id", Message);

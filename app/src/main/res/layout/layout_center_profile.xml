@@ -35,7 +35,7 @@
                     <ImageView
                         android:id="@+id/profile_photo"
                         android:layout_width="70dp"
-                        android:layout_height="70dp"
+                        android:layout_height="67dp"
                         android:layout_centerVertical="true" />
                     <!--app:civ_border_color="@color/black"-->
                     <!--app:civ_border_width="0.5dp"/>-->
@@ -46,11 +46,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/size10"
                         android:layout_marginBottom="@dimen/size10"
-                        android:text="abhishek indralia"
+
                         android:textColor="@color/black"
                         android:textSize="@dimen/textsize12"
                         android:textStyle="bold" />
-
+                    <!--android:text="abhishek indralia"-->
                     <LinearLayout
                         android:id="@+id/video_count_linlayout"
                         android:layout_width="@dimen/size60"

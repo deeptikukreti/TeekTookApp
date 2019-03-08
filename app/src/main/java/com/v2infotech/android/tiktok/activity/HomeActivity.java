@@ -39,24 +39,26 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
     public final int REQUEST_CAMERA = 101;
     public final int SELECT_PHOTO = 102;
+    String session_Id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        SharedPreferences settings = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
-        String session_id = settings.getString("session_id", "");
-        if (session_id == null) {
-            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-        } else {
-            toolbar = getSupportActionBar();
-            // load the store fragment by default
-            BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
-            bottomNavigationView.setOnNavigationItemSelectedListener(this);
-            BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
-            loadFragment(new DashboardFragment());
-        }
+        SharedPreferences sp1 = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+        session_Id = sp1.getString("session_id", "");
+//        SharedPreferences settings = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
+//        String session_id = settings.getString("session_id", "");
+//        if (session_id.isEmpty()) {
+//            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+//        } else {
+        toolbar = getSupportActionBar();
+        // load the store fragment by default
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+        loadFragment(new DashboardFragment());
+        //  }
         // toolbar.setTitle("Shop");
     }
 
@@ -84,22 +86,29 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 loadFragment(new SearchFragment());
                 return true;
             case R.id.navigation_notifications:
-                loadFragment(new FeedbackFragment());
+                if (session_Id.isEmpty()) {
+                    startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                } else {
+                    loadFragment(new FeedbackFragment());
+                }
+
                 return true;
             case R.id.navigation_profile:
-                SharedPreferences sp = getSharedPreferences("USER_SESSION_ID", Context.MODE_PRIVATE);
-                String session_id = sp.getString("session_id", "");
-                if (session_id != null) {
-                    loadFragment(new ProfileFragment());
-                } else {
+                if (session_Id.isEmpty()) {
                     startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                } else {
+                    loadFragment(new ProfileFragment());
                 }
                 return true;
             case R.id.navigation_video:
 //               loadFragment(new VideoFragment());
-                if (checkForPermission()) {
-                    Intent intent = new Intent(HomeActivity.this, PortrateActivity.class);
-                    startActivity(intent);
+                if (session_Id.isEmpty()) {
+                    startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                } else {
+                    if (checkForPermission()) {
+                        Intent intent = new Intent(HomeActivity.this, PortrateActivity.class);
+                        startActivity(intent);
+                    }
                 }
                 return true;
         }

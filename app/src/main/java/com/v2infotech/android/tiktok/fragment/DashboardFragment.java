@@ -34,8 +34,9 @@ public class DashboardFragment extends Fragment {
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
         adapter = new TabAdapter(getActivity().getSupportFragmentManager());
-        adapter.addFragment(new TabFragment2(), "Following");
         adapter.addFragment(new TabFragment1(), "For You");
+        adapter.addFragment(new TabFragment2(), "Following");
+
 
 
         viewPager.setAdapter(adapter);
