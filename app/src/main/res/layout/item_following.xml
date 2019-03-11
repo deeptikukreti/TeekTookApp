@@ -8,7 +8,7 @@
     <com.example.xvideoplayer.MxVideoPlayerWidget
         android:id="@+id/list_video_player"
         android:layout_width="match_parent"
-        android:layout_height="1000dp" />
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:layout_width="@dimen/_70sdp"

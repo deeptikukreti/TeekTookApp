@@ -1,6 +1,7 @@
 package com.example.xvideoplayer;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -524,6 +525,7 @@ public abstract class MxVideoPlayer extends FrameLayout implements MxMediaPlayer
         mCacheImageView.setImageBitmap(null);
     }
 
+    @SuppressLint("RestrictedApi")
     private static void hideSupportActionBar(Context context) {
         ActionBar actionBar = MxUtils.getAppComptActivity(context).getSupportActionBar();
         if (actionBar != null) {
@@ -534,6 +536,7 @@ public abstract class MxVideoPlayer extends FrameLayout implements MxMediaPlayer
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+    @SuppressLint("RestrictedApi")
     private static void showSupportActionBar(Context context) {
         ActionBar actionBar = MxUtils.getAppComptActivity(context).getSupportActionBar();
         if (actionBar != null) {
